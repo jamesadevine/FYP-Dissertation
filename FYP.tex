@@ -26,6 +26,7 @@
 \usepackage{mathtools}
 \usepackage{adjustbox}
 \usepackage{listings}
+\usepackage{pgfplots}
 \usepackage{color}
 \usepackage{hyperref}
 \usepackage{graphicx}
@@ -56,6 +57,20 @@
   tabsize=3
 }
 
+\pgfplotsset{
+   /pgfplots/bar  cycle  list/.style={/pgfplots/cycle  list={%
+        {blue,fill=blue!30!white,mark=none},%
+        {red,fill=red!30!white,mark=none},%
+        {purple,fill=purple!30!white,mark=none},%
+        {orange,fill=orange!30!white,mark=none},%
+        {yellow,fill=yellow!30!white,mark=none},%
+        {brown!60!black,fill=brown!30!white,mark=none},%
+        {green,fill=green!30!white,mark=none},%
+        {pink,fill=pink!30!white,mark=none},%
+        {lime,fill=lime!30!white,mark=none},%
+     }
+   },%
+}
 
 
 
@@ -311,13 +326,30 @@ Through the analysis provided in the previous section, there are a number of req
 
 \section{Background}
 \subsection{System Outline}
-
-
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\columnwidth]{diagrams/overalldescript}
+    \caption {The proposed system.}
+\end{figure}
 \subsection{Fuse}
 \subsubsection{Hardware Selection}
 Based on the requirements, an embedded system seems to be the most applicable technology to this aspect of the project\\
 Todays market consists of a large number of embedded devices built for a huge range of tasks.\\
 This section will determine the best hardware for the monitoring of appliances.
+\paragraph{PIC10F322}
+The 10F322~\cite{10f322} is a small surface mount PIC. Counter to the 16f1788, the 10F322 is smaller, far cheaper only costing 56 pence for amounts over 100.
+The 10f322 also draws far less power around \SI{0.8}{\micro\ampere} at 32khz.\\
+The downsides to using this pic would be that it has no on board serial module. This would increase development time, which may skew other factors of the project.\\
+However this PIC would be more suited to a production environment because of its size and price.
+%pros
+% small
+% cheaper 100+ 0.56p
+% on board adc
+%draws 0.8 microA @ 32 kHz, 1.8V, typical
+%cons
+% factory flash - unsuitable for development
+% no on board serial
+
 \paragraph{PIC16F1788}
 The 16F1788~\cite{16f1788} is a large surface mount PIC. The 16F1788 has lots of program memory, RAM  and carries a lot of on board components including an ADC, and Serial I/O. This makes it great for testing and experimenting with new circuits.\\
 Conversely, this PIC has a large number of on board components, which increases the price (\pounds1.91),  and the size of the PIC.\\
@@ -334,19 +366,7 @@ The power draw of the circuitry is around \SI{8}{\micro\ampere} at 32khz, which 
 % draws 8 microA @ 32 kHz, 1.8V, typical
 % pricey 100+ 1.91 
 
-\paragraph{PIC10F322}
-The 10F322~\cite{10f322} is a small surface mount PIC. Counter to the 16f1788, the 10F322 is smaller, far cheaper only costing 56 pence for amounts over 100.
-The 10f322 also draws far less power around \SI{0.8}{\micro\ampere} at 32khz.\\
-The downsides to using this pic would be that it has no on board serial module. This would increase development time, which may skew other factors of the project.\\
-However this PIC would be more suited to a production environment because of its size and price.
-%pros
-% small
-% cheaper 100+ 0.56p
-% on board adc
-%draws 0.8 microA @ 32 kHz, 1.8V, typical
-%cons
-% factory flash - unsuitable for development
-% no on board serial
+
 
 
 \subsubsection{Conclusions}
@@ -364,7 +384,7 @@ This section will compare key players in this market to determine the hardware t
 The Raspberry Pi~\cite{raspberrypi} is the most well known member of this market, and with the most recent introduction of the Raspberry Pi 2, is a strong market leader as well.\\
 The Raspberry Pi has a number of hardware components that can be controlled by a user, including a Serial I/O port. This Serial I/O port can be used to communicate with external embedded systems, which could be useful for the project.\\
 The Raspberry Pi costs around \pounds30 depending on the model. It comes with Ethernet as standard, but external modules can be added to introduce other technologies such as WiFi and Bluetooth. This will obviously incur additional costs.\\
-The power consumed by the Pi on average is around \SI{700}{\micro\ampere} which is really low for such a powerful computer.
+The power consumed by the Pi on average is around \SI{700}{\milli\ampere} which is really low for such a powerful computer.
 
 
 \paragraph{Hummingboard}
@@ -372,11 +392,11 @@ The Hummingboard~\cite{hummingboard} is a relatively new player in the market.\\
 It's more expensive (\pounds15 more) than the Raspberry Pi, but offers more RAM, and a faster processor.\\
 Like the Raspberry Pi, it offers GPIO and UART built in. Ethernet is also offered as standard, but again like the Raspberry Pi, for an additional amount, WiFi and Bluetooth can be added.\\
 The operating system is based off linux, so it has support for quite a lot of the standard linux distributions, much like the Raspberry Pi.\\
-The Hummingboard slightly consumes more power than the Raspberry Pi, approximately \SI{780}{\micro\ampere} in total, but this would make a negligible difference overall.
+The Hummingboard slightly consumes more power than the Raspberry Pi, approximately \SI{780}{\milli\ampere} in total, but this would make a negligible difference overall.
 \paragraph{Beaglebone Black}
 The Beagle Bone~\cite{beaglebone} prices \pounds5 above the Raspberry Pi and offers a 1gHz processor instead of the Pi's 700 mHz one.\\
 It doesn't have inbuilt UART for serial communications, but it does have a large number of GPIO pins.\\
-The power consumed by the Beaglebone is half that of the Raspberry Pi, with \SI{350}{\micro\ampere}. However it is missing components that the Raspberry Pi does have.
+The power consumed by the Beaglebone is half that of the Raspberry Pi, with \SI{350}{\milli\ampere}. However it is missing components that the Raspberry Pi does have.
 
 \subsubsection{Conclusions}
 It appears that the best candidate for the hub element of this project is the Raspberry Pi.\\
@@ -494,14 +514,22 @@ Development time is also another key factor. Using the MEAN stack will result in
 \begin{figure}[H]
     \includegraphics[width=\columnwidth]{diagrams/UseCase}
     \caption {Use Case Diagram}
+    \label{fig:usecaseoverall}
 \end{figure}
+Figure~\ref{fig:usecaseoverall} shows the use case diagram for the system.\\
+A \textbf{User} can perform various actions, they can get, edit and delete data, and they can also login and register.\\
+A \textbf{Fuse} can only report appliance data, and transmit it over the Earth line.\\
+A \textbf{Hub} can receive data from a \textbf{Fuse}, report data and also register with the \textbf{Server}.\\
+The Server can store and serve the data stored in the database.
+
 \subsection{Overall System Architecture}
 \begin{figure}[H]
     \includegraphics[width=\columnwidth]{diagrams/Architecture}
     \caption {Overall System Architecture}
+    \label{fig:systemarchoverall}
 \end{figure}
 
-
+Figure~\ref{fig:systemarchoverall}
 
 
  %--------------------------
@@ -1660,7 +1688,195 @@ This API is called by the hub.\\
 \end{minted}
 
 \section{Testing and Evaluation}
+\subsection{Fuse}
 
+\resizebox{\columnwidth}{!} {
+\begin{tikzpicture}
+\begin{axis}[
+    title=Packet loss for varying lengths of mains-like cable.,
+    ybar=3pt,
+    ymin=0,
+    width=\columnwidth,
+    %cycle list name=bar cycle list,
+    enlarge x limits=0.25,
+    enlarge y limits={0.25,upper},
+    legend style={at={(0.5,-0.15)},
+      anchor=north,legend columns=-1},
+    symbolic x coords={Avg. Discarded,Avg. Corrected,Avg. Uncorrectable},
+    ylabel={Avg. Packets},
+    xticklabel style={align=center},
+	xtick=data,
+    nodes near coords,
+    every node near coord/.append style={font=\tiny},
+    nodes near coords align={vertical},
+]
+%0
+\addplot 
+	coordinates {(Avg. Discarded,0)
+		 (Avg. Corrected,0) (Avg. Uncorrectable,0)};
+%1
+\addplot 
+	coordinates {(Avg. Discarded,0.33)
+		 (Avg. Corrected,0) (Avg. Uncorrectable,0)};
+%5
+\addplot 
+	coordinates {(Avg. Discarded,1)
+		 (Avg. Corrected,0) (Avg. Uncorrectable,0)};
+%10
+\addplot 
+	coordinates {(Avg. Discarded,0.33)
+		 (Avg. Corrected,0) (Avg. Uncorrectable,0)};
+%20
+\addplot 
+	coordinates {(Avg. Discarded,1)
+		 (Avg. Corrected,0) (Avg. Uncorrectable,0)};
+%30
+\addplot 
+	coordinates {(Avg. Discarded,0.66)
+		 (Avg. Corrected,0) (Avg. Uncorrectable,0)};
+%50
+\addplot 
+	coordinates {(Avg. Discarded,0.66)
+		 (Avg. Corrected,0) (Avg. Uncorrectable,0)};
+%100
+\addplot 
+	coordinates {(Avg. Discarded,0.33)
+		 (Avg. Corrected,0) (Avg. Uncorrectable,0)};
+%150
+\addplot 
+	coordinates {(Avg. Discarded,0.66)
+		 (Avg. Corrected,0) (Avg. Uncorrectable,0)};
+\legend{0m,1m,5m,10m,20m,30m,50m,100m,150m}
+\end{axis}
+\end{tikzpicture}
+}
+
+\subsection{Hub}
+\begin{tikzpicture}
+\begin{axis}[
+    title=Error detect \& correct rates for the hub in \%,
+    ybar=3pt,
+    ymin=0,
+    ymax=105,
+    width=\columnwidth,
+    %cycle list name=bar cycle list,
+    enlarge x limits=0.25,
+    legend columns=2,
+    %enlarge y limits={0.25,upper},
+    legend style={at={(0.5,-0.15)},
+      anchor=north,legend columns=-1},
+    symbolic x coords={Capture Rate,Correct Packets Detected,Incorrect Packets Detected,Uncorrectable Packets Detected, Checksum Inc. Detected},
+    ylabel={Avg. Packets},
+	xtick=data,
+    nodes near coords,
+    every node near coord/.append style={font=\tiny},
+    nodes near coords align={vertical},
+    xticklabel style={align=center,text width=2cm},
+]
+%100 65/20/10/5
+\addplot 
+	coordinates {(Capture Rate,100)
+		 (Correct Packets Detected,100) (Incorrect Packets Detected,100)(Uncorrectable Packets Detected,100)(Checksum Inc. Detected,100)};
+%100 30/40/20/10
+\addplot 
+	coordinates {(Capture Rate,99)
+		 (Correct Packets Detected,99.89) (Incorrect Packets Detected,95)(Uncorrectable Packets Detected,100)(Checksum Inc. Detected,96.67)};
+%100 0/50/30/20
+\addplot 
+	coordinates {(Capture Rate,100)
+		 (Correct Packets Detected,0) (Incorrect Packets Detected,98)(Uncorrectable Packets Detected,100)(Checksum Inc. Detected,100)};
+
+\legend{100 pkts (65/20/10/5),100 pkts (30/40/20/10),100 pkts (0/50/30/20)}
+\end{axis}
+\end{tikzpicture}
+
+
+\begin{tikzpicture}
+\begin{axis}[
+    title=Error detect \& correct rates for the hub in \%,
+    ybar=3pt,
+    ymin=0,
+    ymax=105,
+    width=\columnwidth,
+    %cycle list name=bar cycle list,
+    enlarge x limits=0.25,
+    legend columns=2,
+    %enlarge y limits={0.25,upper},
+    legend style={at={(0.5,-0.15)},
+      anchor=north,legend columns=-1},
+    symbolic x coords={Capture Rate,Correct Packets Detected,Incorrect Packets Detected,Uncorrectable Packets Detected, Checksum Inc. Detected},
+    ylabel={Avg. Packets},
+	xtick=data,
+    nodes near coords,
+    every node near coord/.append style={font=\tiny},
+    nodes near coords align={vertical},
+    xticklabel style={align=center,text width=2cm},
+]
+
+%500 65/20/10/5
+\addplot 
+	coordinates {(Capture Rate,99.6)
+		 (Correct Packets Detected,98.05) (Incorrect Packets Detected,100)(Uncorrectable Packets Detected,100)(Checksum Inc. Detected,100)};
+%500 30/40/20/10
+\addplot 
+	coordinates {(Capture Rate,99.6)
+		 (Correct Packets Detected,99.78) (Incorrect Packets Detected,96.5)(Uncorrectable Packets Detected,100)(Checksum Inc. Detected,100)};
+		 
+%500 0/50/30/20
+\addplot 
+	coordinates {(Capture Rate,99.4)
+		 (Correct Packets Detected,0) (Incorrect Packets Detected,96.8)(Uncorrectable Packets Detected,99.78)(Checksum Inc. Detected,99.67)};
+
+\legend{500 pkts (325/100/50/25),500 pkts (150/200/100/50),500 pkts (0/250/150/100)}
+\end{axis}
+\end{tikzpicture}
+
+\begin{tikzpicture}
+\begin{axis}[
+    title=Error detect \& correct rates for the hub in \%,
+    ybar=3pt,
+    ymin=0,
+    ymax=105,
+    width=\columnwidth,
+    %cycle list name=bar cycle list,
+    enlarge x limits=0.25,
+    legend columns=2,
+    %enlarge y limits={0.25,upper},
+    legend style={at={(0.5,-0.15)},
+      anchor=north,legend columns=-1},
+    symbolic x coords={Capture Rate,Correct Packets Detected,Incorrect Packets Detected,Uncorrectable Packets Detected, Checksum Inc. Detected},
+    ylabel={Packets Processed (\%)},
+	xtick=data,
+    nodes near coords,
+    every node near coord/.append style={font=\tiny},
+    nodes near coords align={vertical},
+    xticklabel style={align=center,text width=2cm},
+]
+		 
+%1000 65/20/10/5
+\addplot 
+	coordinates {(Capture Rate,99.8)
+		 (Correct Packets Detected,98.97) (Incorrect Packets Detected,100)(Uncorrectable Packets Detected,100)(Checksum Inc. Detected,99.33)};
+%1000 30/40/20/10
+\addplot 
+	coordinates {(Capture Rate,99.7)
+		 (Correct Packets Detected,99.89) (Incorrect Packets Detected,98.17)(Uncorrectable Packets Detected,99.83)(Checksum Inc. Detected,100)};
+%1000 0/50/30/20
+\addplot 
+	coordinates {(Capture Rate,99.6)
+		 (Correct Packets Detected,0) (Incorrect Packets Detected,97.33)(Uncorrectable Packets Detected,100)(Checksum Inc. Detected,99.83)};
+
+\legend{1000 pkts (650/200/100/50),1000 pkts (300/400/200/100),1000 pkts (0/500/300/200)}
+\end{axis}
+\end{tikzpicture}
+
+\subsection{App}
+\paragraph{Test Cases}
+
+\paragraph{Proposed usability study}
+
+\subsection{Server}
+\paragraph{Test Cases}
 
 \section{Conclusions \& Future Work}
 
