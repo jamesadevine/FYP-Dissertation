@@ -39,6 +39,7 @@
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
 \definecolor{mauve}{rgb}{0.58,0,0.82}
+\definecolor{OliveGreen}{rgb}{0,0.6,0}
 
 \lstset{frame=tb,
   language=Java,
@@ -86,6 +87,17 @@
             \vspace*{2pt}%Space after
         \end{minipage}%
     }}
+    
+\usepackage{multirow}
+\usepackage{tabularx}
+\usepackage{array}
+\makeatletter
+\newcommand{\thickhline}{%
+    \noalign {\ifnum 0=`}\fi \hrule height 1pt
+    \futurelet \reserved@a \@xhline
+}
+\newcolumntype{"}{@{\vrule width 1pt }}
+\makeatother
 
 
 \newcommand{\forceindent}{\leavevmode{\parindent=1em\indent}}
@@ -1689,6 +1701,8 @@ This API is called by the hub.\\
 
 \section{Testing and Evaluation}
 \subsection{Fuse}
+\paragraph{Apparatus}
+
 
 \resizebox{\columnwidth}{!} {
 \begin{tikzpicture}
@@ -1873,10 +1887,302 @@ This API is called by the hub.\\
 \subsection{App}
 \paragraph{Test Cases}
 
+The following tables are the test cases of the application for the project. Each test has a purpose, a distinct number of steps and a clear result.
+
+%% REGISTER %%
+
+\begin{tabularx}{\columnwidth}{| p{\dimexpr 0.2\columnwidth-2\tabcolsep} | p{ \dimexpr 0.1\columnwidth-2\tabcolsep} | p{\dimexpr 0.35\columnwidth-2\tabcolsep} | p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}
+
+
+\hline
+\textbf{Case:} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textbf{Register Functionality}} \\
+
+\hline
+\textbf{Purpose} & \multicolumn{3}{p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{To determine whether the in-app registration feature works correctly} \\
+
+\hline
+\multirow{3}{*}{\textbf{Criteria}} &
+\multicolumn{2}{p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}{\textbf{Test Step}} & \multicolumn{1}{p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}{\textbf{Expected Results}}\\\cline{2-4}
+    & No. & Description & Description\\\cline{2-4}
+    & 1   & The user enters their name, their email address and their desired password and the user taps the Register button. & The details are sent to the server, and returned to the application, the user is then subsequently logged in providing details are correct.\\ 
+\hline
+\textbf{Actual \newline Result} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textcolor{OliveGreen}{\textbf{SUCCESS}} - The new user was automatically logged in and redirected to the home screen.}\\
+\hline
+\end{tabularx}\\[5pt]
+
+%% LOGIN %%
+
+\begin{tabularx}{\columnwidth}{| p{\dimexpr 0.2\columnwidth-2\tabcolsep} | p{ \dimexpr 0.1\columnwidth-2\tabcolsep} | p{\dimexpr 0.35\columnwidth-2\tabcolsep} | p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}
+
+
+\hline
+\textbf{Case:} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textbf{Login Functionality}} \\
+
+\hline
+\textbf{Purpose} & \multicolumn{3}{p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{To determine whether an existing using can log in to the application} \\
+
+\hline
+\multirow{3}{*}{\textbf{Criteria}} &
+\multicolumn{2}{p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}{\textbf{Test Step}} & \multicolumn{1}{p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}{\textbf{Expected Results}}\\\cline{2-4}
+    & No. & Description & Description\\\cline{2-4}
+    & 1    & The user enters their user name and password and taps the Login button. & The user should be redirected to the home screen upon a successful login with correct credentials.\\
+\hline
+
+\textbf{Actual \newline Result} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textcolor{OliveGreen}{\textbf{SUCCESS}} -  The existing user was logged in, and redirected to the home screen}\\
+\hline
+\end{tabularx}\\[5pt]
+
+%% FUSE DETAILS %%
+
+\begin{tabularx}{\columnwidth}{| p{\dimexpr 0.2\columnwidth-2\tabcolsep} | p{ \dimexpr 0.1\columnwidth-2\tabcolsep} | p{\dimexpr 0.35\columnwidth-2\tabcolsep} | p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}
+
+
+\hline
+\textbf{Case:} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textbf{Updating Fuse Details Functionality}} \\
+
+\hline
+\textbf{Purpose} & \multicolumn{3}{p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{To determine whether a user can edit a fuse, and update the details stored on the server.} \\
+
+\hline
+\multirow{3}{*}{\textbf{Criteria}} &
+\multicolumn{2}{p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}{\textbf{Test Step}} & \multicolumn{1}{p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}{\textbf{Expected Results}}\\\cline{2-4}
+    & No. & Description & Description\\\cline{2-4}
+    & 1    & The user taps on the desired fuses' edit button, amends the fuses' details as required and taps the Update button. & The updated fuse details are sent to the server, and synced back with the client, the modal then closes closes.\\
+\hline
+
+\textbf{Actual \newline Result} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textcolor{OliveGreen}{\textbf{SUCCESS}} -  The user was able to adjust the Fuse details, and those changes were synced with the server.}\\
+\hline
+\end{tabularx}\\[5pt]
+
+%% FUSE IMAGE UPLOAD %%
+
+\begin{tabularx}{\columnwidth}{| p{\dimexpr 0.2\columnwidth-2\tabcolsep} | p{ \dimexpr 0.1\columnwidth-2\tabcolsep} | p{\dimexpr 0.35\columnwidth-2\tabcolsep} | p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}
+
+
+\hline
+\textbf{Case:} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textbf{Fuse Image Upload Functionality}} \\
+
+\hline
+\textbf{Purpose} & \multicolumn{3}{p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{To determine whether an existing user can update a fuse with a new profile picture.} \\
+
+\hline
+\multirow{3}{*}{\textbf{Criteria}} &
+\multicolumn{2}{p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}{\textbf{Test Step}} & \multicolumn{1}{p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}{\textbf{Expected Results}}\\\cline{2-4}
+    & No. & Description & Description\\\cline{2-4}
+    & 1    & The user taps on the desired fuses edit button, taps the 'Upload new photo' button, takes a picture and hits ok.  & The new image is then uploaded to the server, and is synced with the client.\\
+\hline
+
+\textbf{Actual \newline Result} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textcolor{red}{\textbf{FAIL}} -  Using a large phone (iPhone 6+) to take the photo caused the application to crash. \newline This was tested again on the iPhone 5, and it uploaded without a hitch.}\\
+\hline
+\end{tabularx}\\[5pt]
+
+%% FUSE DELETE %%
+
+\begin{tabularx}{\columnwidth}{| p{\dimexpr 0.2\columnwidth-2\tabcolsep} | p{ \dimexpr 0.1\columnwidth-2\tabcolsep} | p{\dimexpr 0.35\columnwidth-2\tabcolsep} | p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}
+
+
+\hline
+\textbf{Case:} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textbf{Delete a Fuse Functionality}} \\
+
+\hline
+\textbf{Purpose} & \multicolumn{3}{p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{To determine whether an existing user can remove a fuse from their accout.} \\
+
+\hline
+\multirow{3}{*}{\textbf{Criteria}} &
+\multicolumn{2}{p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}{\textbf{Test Step}} & \multicolumn{1}{p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}{\textbf{Expected Results}}\\\cline{2-4}
+    & No. & Description & Description\\\cline{2-4}
+    & 1    & The user swipes left on the fuse they would like to delete and taps the delete button.  & The fuse is removed from the list of fuses and isn't shown again until the fuse next reports..\\
+\hline
+
+\textbf{Actual \newline Result} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textcolor{OliveGreen}{\textbf{SUCCESS}} - The fuse was removed from the account, and then at the next time the fuse reported data, the fuse was added back to the list.}\\
+\hline
+\end{tabularx}\\[5pt]
+
+%% FUSE LIVE DATA %%
+
+\begin{tabularx}{\columnwidth}{| p{\dimexpr 0.2\columnwidth-2\tabcolsep} | p{ \dimexpr 0.1\columnwidth-2\tabcolsep} | p{\dimexpr 0.35\columnwidth-2\tabcolsep} | p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}
+
+
+\hline
+\textbf{Case:} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textbf{Live Data Functionality}} \\
+
+\hline
+\textbf{Purpose} & \multicolumn{3}{p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{To determine if a user can view live data reported by a fuse} \\
+
+\hline
+\multirow{3}{*}{\textbf{Criteria}} &
+\multicolumn{2}{p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}{\textbf{Test Step}} & \multicolumn{1}{p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}{\textbf{Expected Results}}\\\cline{2-4}
+    & No. & Description & Description\\\cline{2-4}
+    & 1    & The user taps on a fuse and is presented with the live view. & The user is able to see live data being reported by the fuse.\\
+\hline
+
+\textbf{Actual \newline Result} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textcolor{OliveGreen}{\textbf{SUCCESS}} -  The user could see live data being reported by the Fuse}\\
+\hline
+\end{tabularx}\\[5pt]
+
+%% ADD HUB %%
+
+\begin{tabularx}{\columnwidth}{| p{\dimexpr 0.2\columnwidth-2\tabcolsep} | p{ \dimexpr 0.1\columnwidth-2\tabcolsep} | p{\dimexpr 0.35\columnwidth-2\tabcolsep} | p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}
+
+
+\hline
+\textbf{Case:} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textbf{Add a Hub Functionality}} \\
+
+\hline
+\textbf{Purpose} & \multicolumn{3}{p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{To determine if a user can link their account with a hub} \\
+
+\hline
+\multirow{3}{*}{\textbf{Criteria}} &
+\multicolumn{2}{p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}{\textbf{Test Step}} & \multicolumn{1}{p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}{\textbf{Expected Results}}\\\cline{2-4}
+    & No. & Description & Description\\\cline{2-4}
+    & 1    & The user taps the plus button and types in the Hub ID. & The user is successfully able to link their hub and see data being reported by the fuses connected to that hub.\\
+\hline
+
+\textbf{Actual \newline Result} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textcolor{OliveGreen}{\textbf{SUCCESS}} -  After the user entered the new hub ID and linked it with their account, the fuses screen was updted, and allowed the viewing of the additional hub.}\\
+\hline
+\end{tabularx}\\[5pt]
+
+%% REMOVE HUB %%
+
+\begin{tabularx}{\columnwidth}{| p{\dimexpr 0.2\columnwidth-2\tabcolsep} | p{ \dimexpr 0.1\columnwidth-2\tabcolsep} | p{\dimexpr 0.35\columnwidth-2\tabcolsep} | p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}
+
+
+\hline
+\textbf{Case:} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textbf{Remove a Hub Functionality}} \\
+
+\hline
+\textbf{Purpose} & \multicolumn{3}{p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{To determine if a user can unlink their user account with a hub.} \\
+
+\hline
+\multirow{3}{*}{\textbf{Criteria}} &
+\multicolumn{2}{p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}{\textbf{Test Step}} & \multicolumn{1}{p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}{\textbf{Expected Results}}\\\cline{2-4}
+    & No. & Description & Description\\\cline{2-4}
+    & 1    & The user swipes left on the desired hub, and taps the delete button & The hub should is unlinked with the user account.\\
+\hline
+
+\textbf{Actual \newline Result} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textcolor{OliveGreen}{\textbf{SUCCESS}} -  After the user tapped the delete button, the hub was then unlinked from the user account, and no fuses were displayed.}\\
+\hline
+\end{tabularx}\\[5pt]
+
+%% Carbon Statistics %%
+
+\begin{tabularx}{\columnwidth}{| p{\dimexpr 0.2\columnwidth-2\tabcolsep} | p{ \dimexpr 0.1\columnwidth-2\tabcolsep} | p{\dimexpr 0.35\columnwidth-2\tabcolsep} | p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}
+
+
+\hline
+\textbf{Case:} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textbf{Carbon Statistics Functionality}} \\
+
+\hline
+\textbf{Purpose} & \multicolumn{3}{p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{To determine if a user can view the current Carbon statistics for the UK.} \\
+
+\hline
+\multirow{3}{*}{\textbf{Criteria}} &
+\multicolumn{2}{p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}{\textbf{Test Step}} & \multicolumn{1}{p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}{\textbf{Expected Results}}\\\cline{2-4}
+    & No. & Description & Description\\\cline{2-4}
+    & 1    & The user taps on the Carbon statistics tab & The Carbon statistics should be displayed.\\
+\hline
+
+\textbf{Actual \newline Result} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textcolor{OliveGreen}{\textbf{SUCCESS}} -  After the user tapped the Carbon statistics tab, the statistics were displayed.}\\
+\hline
+\end{tabularx}\\[5pt]
+
+%% POWER Statistics %%
+
+\begin{tabularx}{\columnwidth}{| p{\dimexpr 0.2\columnwidth-2\tabcolsep} | p{ \dimexpr 0.1\columnwidth-2\tabcolsep} | p{\dimexpr 0.35\columnwidth-2\tabcolsep} | p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}
+
+
+\hline
+\textbf{Case:} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textbf{Power Statistics Functionality}} \\
+
+\hline
+\textbf{Purpose} & \multicolumn{3}{p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{To determine if a user can view the current Power statistics for the UK.} \\
+
+\hline
+\multirow{3}{*}{\textbf{Criteria}} &
+\multicolumn{2}{p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}{\textbf{Test Step}} & \multicolumn{1}{p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}{\textbf{Expected Results}}\\\cline{2-4}
+    & No. & Description & Description\\\cline{2-4}
+    & 1    & The user taps on the Power statistics tab & The Power statistics should be displayed.\\
+\hline
+
+\textbf{Actual \newline Result} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textcolor{OliveGreen}{\textbf{SUCCESS}} -  After the user tapped the Power statistics tab, the statistics were displayed.}\\
+\hline
+\end{tabularx}\\[5pt]
+
+%% Price Statistics %%
+
+\begin{tabularx}{\columnwidth}{| p{\dimexpr 0.2\columnwidth-2\tabcolsep} | p{ \dimexpr 0.1\columnwidth-2\tabcolsep} | p{\dimexpr 0.35\columnwidth-2\tabcolsep} | p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}
+
+
+\hline
+\textbf{Case:} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textbf{Power Statistics Functionality}} \\
+
+\hline
+\textbf{Purpose} & \multicolumn{3}{p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{To determine if a user can view the current Price statistics for the UK.} \\
+
+\hline
+\multirow{3}{*}{\textbf{Criteria}} &
+\multicolumn{2}{p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}{\textbf{Test Step}} & \multicolumn{1}{p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}{\textbf{Expected Results}}\\\cline{2-4}
+    & No. & Description & Description\\\cline{2-4}
+    & 1    & The user taps on the Price statistics tab & The Price statistics should be displayed.\\
+\hline
+
+\textbf{Actual \newline Result} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textcolor{OliveGreen}{\textbf{SUCCESS}} -  After the user tapped the Price statistics tab, the statistics were displayed.}\\
+\hline
+\end{tabularx}\\[5pt]
+
+%% Edit Profile %%
+
+\begin{tabularx}{\columnwidth}{| p{\dimexpr 0.2\columnwidth-2\tabcolsep} | p{ \dimexpr 0.1\columnwidth-2\tabcolsep} | p{\dimexpr 0.35\columnwidth-2\tabcolsep} | p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}
+
+
+\hline
+\textbf{Case:} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textbf{Edit Profile Functionality}} \\
+
+\hline
+\textbf{Purpose} & \multicolumn{3}{p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{To determine if a user view and edit their profile.} \\
+
+\hline
+\multirow{3}{*}{\textbf{Criteria}} &
+\multicolumn{2}{p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}{\textbf{Test Step}} & \multicolumn{1}{p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}{\textbf{Expected Results}}\\\cline{2-4}
+    & No. & Description & Description\\\cline{2-4}
+    & 1    & The user taps on profile item, changes some information, and taps the update button. & The Users' profile information should be synced with the server, and then updated on the client..\\
+\hline
+
+\textbf{Actual \newline Result} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textcolor{OliveGreen}{\textbf{SUCCESS}} -  After the user tapped update, the user details were synced with the server and updated client side.}\\
+\hline
+\end{tabularx}\\[5pt]
+
+
+
 \paragraph{Proposed usability study}
 
+
 \subsection{Server}
-\paragraph{Test Cases}
+
+\paragraph{Stress Testing}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\columnwidth]{/stresstests/users100}
+    \caption {A stress test of 100 concurrent users performing 100 requests}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\columnwidth]{/stresstests/users1000}
+    \caption {A stress test of 1000 concurrent users performing 100 requests}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\columnwidth]{/stresstests/users2000}
+    \caption {A stress test of 2000 concurrent users performing 100 requests}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\columnwidth]{/stresstests/vmware}
+    \caption {The performance of the server as indicated by VMWare performance tools.}
+\end{figure}
 
 \section{Conclusions \& Future Work}
 
