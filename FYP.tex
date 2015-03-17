@@ -64,11 +64,11 @@
         {red,fill=red!30!white,mark=none},%
         {purple,fill=purple!30!white,mark=none},%
         {orange,fill=orange!30!white,mark=none},%
-        {yellow,fill=yellow!30!white,mark=none},%
+        {olive,fill=olive!30!white,mark=none},%
         {brown!60!black,fill=brown!30!white,mark=none},%
         {green,fill=green!30!white,mark=none},%
         {pink,fill=pink!30!white,mark=none},%
-        {lime,fill=lime!30!white,mark=none},%
+        {magenta,fill=magenta!30!white,mark=none},%
      }
    },%
 }
@@ -1712,21 +1712,28 @@ The test devised combined baud rates the baud rates with the selected cable leng
 On the Hub, a testing script was created based on the final version of the software implementation. This script provided enhanced logging which allowed the generation of various data sets in CSV format.\\
 Google Sheets was used to process the data into summaries which were used to generate the following chart.
 \subsubsection{Results}
+In the coming graphs, the following terminology is used:
+\begin{itemize}
+\item Discarded Packet - A discarded packet is where the Hub is in the middle of processing a packet, and sees no more activity for a period of 1500 microseconds. It will then time out and wait for the next packet to begin. In other words, a framing error.
+\item Corrected Packet - A corrected packet is when the Hub captures a packet, and is sent to the Decoder. The Decoder processes a packet, and identifies an incorrect bit, and corrects it.
+\item Uncorrectable Packet - An Uncorrectable packet is where a packet is fully captured and sent to the Decoder. The Decoder then determines that there are 2 or more bit errors, and will therefore cease processing of said packet.
+\end{itemize}
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
-    title=Packet loss for varying lengths of mains cable for 9600 baud.,
+    align=center,
+    title=Percentage of packets that were discarded\, corrected or uncorrectable for varying lengths\\of mains cable at 9600 baud for 1000 packets.,
     ybar=3pt,
     ymin=0,
+    ymax=100,
     width=\columnwidth,
     %cycle list name=bar cycle list,
     enlarge x limits=0.25,
-    enlarge y limits={0.25,upper},
     legend style={at={(0.5,-0.15)},
       anchor=north,legend columns=-1},
-    symbolic x coords={Avg. Discarded,Avg. Corrected,Avg. Uncorrectable},
-    ylabel={Avg. Packets},
+    symbolic x coords={Discarded Packets,Corrected Packets,Uncorrectable Packets},
+    ylabel={Percentage of Packets},
     xticklabel style={align=center},
 	xtick=data,
     nodes near coords,
@@ -1735,40 +1742,40 @@ Google Sheets was used to process the data into summaries which were used to gen
 ]
 %0
 \addplot 
-	coordinates {(Avg. Discarded,0)
-		 (Avg. Corrected,0) (Avg. Uncorrectable,0)};
+	coordinates {(Discarded Packets,0)
+		 (Corrected Packets,0) (Uncorrectable Packets,0)};
 %1
 \addplot 
-	coordinates {(Avg. Discarded,0.33)
-		 (Avg. Corrected,0) (Avg. Uncorrectable,0)};
+	coordinates {(Discarded Packets,0.1)
+		 (Corrected Packets,0) (Uncorrectable Packets,0)};
 %5
 \addplot 
-	coordinates {(Avg. Discarded,1)
-		 (Avg. Corrected,0) (Avg. Uncorrectable,0)};
+	coordinates {(Discarded Packets,0.3)
+		 (Corrected Packets,0) (Uncorrectable Packets,0)};
 %10
 \addplot 
-	coordinates {(Avg. Discarded,0.33)
-		 (Avg. Corrected,0) (Avg. Uncorrectable,0)};
+	coordinates {(Discarded Packets,0.1)
+		 (Corrected Packets,0) (Uncorrectable Packets,0)};
 %20
 \addplot 
-	coordinates {(Avg. Discarded,1)
-		 (Avg. Corrected,0) (Avg. Uncorrectable,0)};
+	coordinates {(Discarded Packets,0.3)
+		 (Corrected Packets,0) (Uncorrectable Packets,0)};
 %30
 \addplot 
-	coordinates {(Avg. Discarded,0.66)
-		 (Avg. Corrected,0) (Avg. Uncorrectable,0)};
+	coordinates {(Discarded Packets,0.2)
+		 (Corrected Packets,0) (Uncorrectable Packets,0)};
 %50
 \addplot 
-	coordinates {(Avg. Discarded,0.66)
-		 (Avg. Corrected,0) (Avg. Uncorrectable,0)};
+	coordinates {(Discarded Packets,0.2)
+		 (Corrected Packets,0) (Uncorrectable Packets,0)};
 %100
 \addplot 
-	coordinates {(Avg. Discarded,0.33)
-		 (Avg. Corrected,0) (Avg. Uncorrectable,0)};
+	coordinates {(Discarded Packets,0.1)
+		 (Corrected Packets,0) (Uncorrectable Packets,0)};
 %150
 \addplot 
-	coordinates {(Avg. Discarded,0.66)
-		 (Avg. Corrected,0) (Avg. Uncorrectable,0)};
+	coordinates {(Discarded Packets,0.2)
+		 (Corrected Packets,0) (Uncorrectable Packets,0)};
 \legend{0m,1m,5m,10m,20m,30m,50m,100m,150m}
 \end{axis}
 \end{tikzpicture}
@@ -1802,8 +1809,14 @@ Google Sheets was once again used to collate and analyse the data into a short s
 Both programs logged the data in CSV format making it extremely easy to transform into a spreadsheet.
 \subsubsection{Results}
 Each graph shows the results generated from the test outlined in the previous section.\\
-Each series label represents the number of each type of packet used in that test, it is formatted as follows:\\
-\textit{Correct packets / Incorrect packets / Uncorrectable packets / Incorrect checksum packets}
+Each series label represents the number of each type of packet used in that test, it is formatted as follows:\\[5pt]
+\textit{Correct packets / Incorrect packets / Uncorrectable packets / Incorrect checksum packets}\\[5pt]
+For each graph the following terminology is used:
+\begin{itemize}
+
+\end{itemize}
+\item 
+\end{itemize}m
 \begin{figure}[H]
 \centering
 \resizebox {!} {10cm} {
