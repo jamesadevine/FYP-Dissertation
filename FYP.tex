@@ -336,6 +336,7 @@ Through the analysis provided in the previous section, there are a number of req
   \item \underline{Reliable} - The device should be reliable and require minimal maintenance.
 \end{itemize}
 
+\clearpage
 \section{Background}
 \subsection{System Outline}
 \begin{figure}[H]
@@ -516,7 +517,7 @@ Development time is also another key factor. Using the MEAN stack will result in
 
 
 
-
+\clearpage
  %--------------------------
  %DESIGN
  %--------------------------
@@ -1699,15 +1700,23 @@ This API is called by the hub.\\
 {error: "Stats are not available for this date.", stats: {} }
 \end{minted}
 
+\clearpage
+
 \section{Testing and Evaluation}
 \subsection{Fuse}
-\paragraph{Apparatus}
-
-
-\resizebox{\columnwidth}{!} {
+\subsubsection{Test Outline}
+Important tests were carried out on the fuse to determine the maximum aud rates rates that could be achieved through the identified hardware, as well as considering how the length of transmission cable (Earth line) would affect error rate, and reception by the Hub.\\
+A number of different assembly files were created to test different baud rates (changing clock speed if required). The assembly files generated packets at a fixed timing to reliably determine reception on the Hub-side. The selected baud rates were: 9600, 19200 and 57600.\\
+To test the reliability of transmissions over varying lengths of cable, different lengths were created and used in the experiment, these lengths being: 0m, 1m, 5m, 10m, 15m, 19m, 100m. Combining these different lengths generated lengths other than those specified. The final selected cable lengths were: 0m, 1m, 5m, 10m, 20m, 30m, 50m, 100m, 150m.\\
+The test devised combined baud rates the baud rates with the selected cable length. For each cable length, 1000 packets were sent at a rate of 100 packets per second.\\
+On the Hub, a testing script was created based on the final version of the software implementation. This script provided enhanced logging which allowed the generation of various data sets in CSV format.\\
+Google Sheets was used to process the data into summaries which were used to generate the following chart.
+\subsubsection{Results}
+\begin{figure}[H]
+\centering
 \begin{tikzpicture}
 \begin{axis}[
-    title=Packet loss for varying lengths of mains-like cable.,
+    title=Packet loss for varying lengths of mains cable for 9600 baud.,
     ybar=3pt,
     ymin=0,
     width=\columnwidth,
@@ -1763,12 +1772,44 @@ This API is called by the hub.\\
 \legend{0m,1m,5m,10m,20m,30m,50m,100m,150m}
 \end{axis}
 \end{tikzpicture}
-}
+\caption{The results from the tests.}
+\label{fig:pktlossmains}
+\end{figure}
+Figure~\ref{fig:pktlossmains} shows the average number of discarded packets, the average number of corrected packets and the average number of uncorrectable packets.\\
+The graph shows that there isn't any correlation between distance and the average number of corrected, and uncorrectable packets. It also shows that there isn't a distinct correlation between discarded packets and cable length.\\
+The experiment presented an unknown issue. The hardware cannot cope with a baud rate higher than 9600, as shown by the singular graph above. The same experiment was repeated on the previously identified baud rates, and the hub was unable to identify any clean packets.\\
+The reason for this was due to the OpAmp which has a slew rate of 0.5 volts per microsecond. It deformed the packets received hub side, meaning that that could not be recognised by the Hub. The effect of the slew rate can be seen in the following image:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=6cm]{/tests/slew}
+    \caption {A graphical representation of how the slew rate affects square waves~\cite{slew}}
+\end{figure}
+
+\subsubsection{Conclusions}
+There is only one conclusion that can be drawn from the evaluation of the Fuse: The baud rate is low, and the selected OpAmp means that a faster baud rate cannot be used.\\
+A different OpAmp with a lower slew rate could be used to improve the data rate in future so to ensure that the hub can correctly receive packets.
+
 
 \subsection{Hub}
+\subsubsection{Test Outline}
+The next test to be performed concerned only the hub. This test was designed to assess the overall effectiveness of error detection and correction Hub-side.\\
+The testing apparatus consisted of two Raspberry Pi's. One Pi would act as the fuse, and send a stream of packets to the Hub.\\ 
+A whole new program was devised that generated packets, recorded each packet and it's type, and the time it was sent from the 'Fuse' Pi.\\
+The packets sent from the 'Fuse' Pi consisted of some percentage of each type of packet: a correct packet, a correctable packet, an uncorrectable packet and a packet with an incorrect checksum. These packets were randomly ordered and streamed to the Pi.\\
+The script used for testing the Fuse was used again to record the received packets, and each type the received packet had for the Hub.\\
+The two data sets generated from the Hub and the 'Fuse' Pi could then be correlated and cross examined to produce statistics about the capture rate and the different detection rates of each type of packet.\\
+Google Sheets was once again used to collate and analyse the data into a short summary that could be used to generate graphs.\\
+Both programs logged the data in CSV format making it extremely easy to transform into a spreadsheet.
+\subsubsection{Results}
+Each graph shows the results generated from the test outlined in the previous section.\\
+Each series label represents the number of each type of packet used in that test, it is formatted as follows:\\
+\textit{Correct packets / Incorrect packets / Uncorrectable packets / Incorrect checksum packets}
+\begin{figure}[H]
+\centering
+\resizebox {!} {10cm} {
 \begin{tikzpicture}
 \begin{axis}[
-    title=Error detect \& correct rates for the hub in \%,
+    title=Error detection \& correction rates for the hub in \% for 100 packets,
     ybar=3pt,
     ymin=0,
     ymax=105,
@@ -1800,14 +1841,19 @@ This API is called by the hub.\\
 	coordinates {(Capture Rate,100)
 		 (Correct Packets Detected,0) (Incorrect Packets Detected,98)(Uncorrectable Packets Detected,100)(Checksum Inc. Detected,100)};
 
-\legend{100 pkts (65/20/10/5),100 pkts (30/40/20/10),100 pkts (0/50/30/20)}
+\legend{65/20/10/5,30/40/20/10,0/50/30/20}
 \end{axis}
 \end{tikzpicture}
+}
+\end{figure}
 
 
+\begin{figure}[H]
+\centering
+\resizebox {!} {10cm} {
 \begin{tikzpicture}
 \begin{axis}[
-    title=Error detect \& correct rates for the hub in \%,
+    title=Error detection \& correction rates for the hub in \% for 500 packets,
     ybar=3pt,
     ymin=0,
     ymax=105,
@@ -1841,13 +1887,18 @@ This API is called by the hub.\\
 	coordinates {(Capture Rate,99.4)
 		 (Correct Packets Detected,0) (Incorrect Packets Detected,96.8)(Uncorrectable Packets Detected,99.78)(Checksum Inc. Detected,99.67)};
 
-\legend{500 pkts (325/100/50/25),500 pkts (150/200/100/50),500 pkts (0/250/150/100)}
+\legend{325/100/50/25,150/200/100/50),0/250/150/100}
 \end{axis}
 \end{tikzpicture}
+}
+\end{figure}
 
+\begin{figure}[H]
+\centering
+\resizebox {!} {10cm} {
 \begin{tikzpicture}
 \begin{axis}[
-    title=Error detect \& correct rates for the hub in \%,
+    title=Error detection \& correction rates for the hub in \% for 1000 packets,
     ybar=3pt,
     ymin=0,
     ymax=105,
@@ -1880,12 +1931,20 @@ This API is called by the hub.\\
 	coordinates {(Capture Rate,99.6)
 		 (Correct Packets Detected,0) (Incorrect Packets Detected,97.33)(Uncorrectable Packets Detected,100)(Checksum Inc. Detected,99.83)};
 
-\legend{1000 pkts (650/200/100/50),1000 pkts (300/400/200/100),1000 pkts (0/500/300/200)}
+\legend{650/200/100/50,300/400/200/100,0/500/300/200}
 \end{axis}
 \end{tikzpicture}
+}
+\end{figure}
+The graphs show that the overall error correction \& error detection rates for the hub are almost perfect.\\
+In a few of the tests packets were discarded by the Hub. When a packet is discarded on the hub, there is a cool off period before resuming listening for the beginning of the next packet to the value of 1.5 milliseconds. Therefore, if one packet is lost, at the rate the 'Fuse' Pi was transmitting, 2 packets would be lost which is why there is a mismatch between the number of sent packets and received packets. 
+
+\subsubsection{Conclusions}
+Overall, the evaluation of the error correction and detection capabilities of the Hub has proved to be very successful. The Hub appears to be pretty impervious to errors, and it detected the 100\% of each type of packet that it received.\\
+Once point to note however for possibly future improvement, is the cool off period between discarding a packet and resuming the next packet. Some fine tuning on this aspect could improve the capture rate of the hub.
 
 \subsection{App}
-\paragraph{Test Cases}
+\subsubsection{Test Cases}
 
 The following tables are the test cases of the application for the project. Each test has a purpose, a distinct number of steps and a clear result.
 
@@ -2154,35 +2213,74 @@ The following tables are the test cases of the application for the project. Each
 
 
 
-\paragraph{Proposed usability study}
+\subsubsection{Proposed Usability Study}
+
+Given more time, a full Usability study would be conducted with the aim of evaluating the usefulness of the application, and a study into how it affects user behaviour.\\
+At the end of the usability study, each participant should answer the following questions:
+\begin{itemize}
+\item On a scale of 1-10, how easy is it to login or register using the application?
+\item On a scale of 1-10, how easy is the application to Navigate?
+\item On a scale of 1-10, how useful was the Home screen for the application?
+\item On a scale of 1-10, how useful was the live data offered by the application?
+\item On a scale of 1-10, how insightful were the live statistics offered by the application?
+\item On a scale of 1-10, how would you rate the applications usefulness?
+\item Do you feel that the application helped to lower the energy expenditure of your household? If so, how?
+\item Do you feel that the application affected the times at which you used your big appliances? If not, why?
+\item Any additional comments?
+\end{itemize}
+The results obtained from the usability study, would help narrow the scope of future work.
+
+\subsubsection{Conclusions}
+The majority of test cases resulted in successes, the one exception being a fault with the PhoneGap Cordova Camera plugin, when testing Image upload. The iPhone 6+ is a relatively new device, with a high number of pixels per inch, meaning that the image produced is too big for the Camera plugin to handle, causing it to crash.\\
+A possible fix for this is to reduce the resolution of the image, or decrease the image size specifically for the iPhone 6+.\\
+The proposed Usability Study would provide a number of insights into the project, that could help direct the future work for this project.
 
 
 \subsection{Server}
 
-\paragraph{Stress Testing}
+\subsubsection{Test Outline}
+To test the Server, a test was devised to perform various stress tests and see how the server reacts under various loads.\\
+The server specification is as follows: a 2.3Ghz CPU and 4 gigabytes of RAM.\\
+The stress tests were conducted using a piece of software called JMeter~\cite{jmeter}. This piece of software runs locally on a personal machine, and imitates a user specified number of clients. JMeter can generate a number of statistics and graphs, the main statistic this test was interested in was Concurrent Users Vs. Response Time.\\
+To test the server, a single URL was called 100 times by X number of concurrent users, with a ramp up period of 10 seconds.\\
+The maximum number of users that JMeter can support is 2200, therefore there were three test steps: 100, 1000 and 2000.\\
+The selected URL was the Login url (\url{scc-devine.lancs.ac.uk:8000/api/user}) which returns quite a large JSON object (316 bytes), which has to be retrieved from the database. The tests used valid credentials which meant that the server had to fetch the data every request.
+
+\subsubsection{Results}
+In the following graphs, Users are referred to as Threads, because in JMeter a thread acts as a user.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\columnwidth]{/stresstests/users100}
     \caption {A stress test of 100 concurrent users performing 100 requests}
+    \label{fig:stress100}
 \end{figure}
-
+Figure~\ref{fig:stress100} shows the results of a test of 100 concurrent users. The test shows that the server handles 100 concurrent clients pretty well with one bad spike where a user had to wait 400 ms for a response, which immediately scales back down for the next request.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\columnwidth]{/stresstests/users1000}
     \caption {A stress test of 1000 concurrent users performing 100 requests}
+    \label{fig:stress1000}
 \end{figure}
-
+Figure~\ref{fig:stress1000} shows the results of a test of 1000 concurrent users. The Server starts well, with a steady increase of response time. As the number of users increases to 500 the difference in response times is huge, with a lot of random spikes. At 1000, the spikes are even worse with a peak of around 2000 ms response time.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\columnwidth]{/stresstests/users2000}
     \caption {A stress test of 2000 concurrent users performing 100 requests}
+    \label{fig:stress2000}
 \end{figure}
+Figure~\ref{fig:stress1000} shows the results of a test of 2000 concurrent users. The server copes well to begin with, and at around 300 active users, there is a huge spike in response time, which immediately settles. Later, the huge variance in response time returns and becomes more sporadic the more concurrent users there are. The longest response time in this figure is around 9700 ms.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\columnwidth]{/stresstests/vmware}
     \caption {The performance of the server as indicated by VMWare performance tools.}
+    \label{fig:stressvmware}
 \end{figure}
+Figure~\ref{fig:stressvmware} shows the VMWare statistics. There are four clear spikes, the first being 100 concurrent users, the second 1000 concurrent users, the third 2000 concurrent users and the last one is an attempt at 10,000 users which was omitted.\\
+Spikes can be seen in both the CPU graph and the Memory usage graph, and they clearly match onto one another. Interestingly, even though the CPU usage sky rockets, the memory usage remains pretty low in comparison.
+
+\subsubsection{Conclusions}
+It is clear from the stress tests that a single CPU server with a small amount of RAM is not up for the task of a hugely utilised system. However, the server-side software has been designed with this in mind, and is scalable across server clusters, allowing for a more robust, distributed system.
 
 \section{Conclusions \& Future Work}
 
