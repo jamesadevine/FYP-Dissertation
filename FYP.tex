@@ -18,7 +18,7 @@
 %  3)  latex apssamp.tex
 %  4)  latex apssamp.tex
 %
-\documentclass[preprint,12pt,3p]{elsarticle}
+\documentclass[draft,preprint,12pt,3p]{elsarticle}
 \renewcommand{\thesection}{\arabic{section}}
 \renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
 \renewcommand\thesubsubsection{\thesubsection.\arabic{subsubsection}}
@@ -67,13 +67,15 @@
         {olive,fill=olive!30!white,mark=none},%
         {brown!60!black,fill=brown!30!white,mark=none},%
         {green,fill=green!30!white,mark=none},%
-        {pink,fill=pink!30!white,mark=none},%
-        {magenta,fill=magenta!30!white,mark=none},%
+        {teal,fill=teal!30!white,mark=none},%
+        {black,fill=black!30!white,mark=none},%
      }
    },%
 }
 
-
+\usepackage{pifont}% http://ctan.org/pkg/pifont
+\newcommand{\checkmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
 
 \setlength\parindent{0pt}
 
@@ -102,10 +104,14 @@
 
 \newcommand{\forceindent}{\leavevmode{\parindent=1em\indent}}
 
+\titleformat*{\section}{\LARGE}
+\titleformat*{\subsection}{\Large}
+\titleformat*{\subsubsection}{\large}
+
 \renewcommand{\theparagraph}{\thesubsubsection.\arabic{paragraph}}{\centering}
 
 \titleformat{\paragraph}[hang]
-  {\itshape}{\thesubsubsection.\arabic{paragraph}}{5pt}{\small}
+  {}{\thesubsubsection.\arabic{paragraph}}{5pt}{\normalsize}
   
  \titleformat{\subparagraph}[hang]
   {\bfseries}{\theparagraph.\arabic{paragraph}}{5pt}{\parabackground}
@@ -151,39 +157,73 @@
 }
 \makeatother
 
-\begin{document}
+%% Code added to comply with the requirement that the
+%% abstract is on the second page together with the keywords.
+%% Remove up to the <end of patch> line for removing the patch.
+\usepackage{etoolbox}
+\patchcmd{\pprintMaketitle}
+ {\ifvoid\absbox\else\unvbox\absbox\par\vskip10pt\fi}
+ {\ifvoid\absbox\else\clearpage\unvbox\absbox\par\vskip30pt\fi}
+ {}{}
+\patchcmd{\pprintMaketitle}
+ {\hrule\vskip12pt}
+ {}
+ {}{}
+\patchcmd{\pprintMaketitle}
+ {\hrule\vskip12pt}
+ {}
+ {}{}
+\patchcmd{\pprintMaketitle}
+ {\clearpage}
+ {}
+ {}{}
+\pretocmd{\resetTitleCounters}{\vskip5cm}
+\appto{\pprintMaketitle}{\clearpage}
 
-\title{A low complexity, low infrastucture solution to per appliance Energy Monitoring}% Force line breaks with \\
+%% <end of patch>
+
+%fix double quotes
+\usepackage [english]{babel}
+\usepackage [autostyle, english = american]{csquotes}
+\MakeOuterQuote{"}
+
+\begin{document}
+\vspace*{20px}
+\title{A low complexity, low infrastructure\\ solution to per appliance Energy\\ Monitoring}% Force line breaks with \\
 
 \author{James Devine}
 \address{School of Computing and Communications, Lancaster University}
-\author{Joseph Finney (Supervisor)}
-\address{Infolab21, Lancaster University}
-
-\date{\today}% It is always \today, today,
-             %  but any date may be explicitly specified
+\author{MSci (Hons) Computer Science}
+\address{\today}
 
 \begin{abstract}
-Abstract to be written at a later date
+Energy monitoring has come to the fore in recent years due to rapid climate change and as a result energy companies began distributing free energy monitoring kits. Because of this, many homes have monitoring devices that provide an overall view of the energy consumption of a household, but do not have the ability to view energy consumption per device.\\ 
+This project investigates a solution to the problem of per appliance energy monitoring using a low infrastructure, low cost approach, utilising the Earthed infrastructure of a building as a means of communication.\\
+An application allows Users to interface with the data obtained by the system, as well as external price, energy and carbon information, with the hope of allowing Users to make informed decisions on the usage of their appliances.\\
+The results of this project show that the Earthed internals of a buildings can indeed be utilised as means of communication, and that the reliability and dependability of such a system are high.
 \begin{description}
-\item[Usage]
-Secondary publications and information retrieval purposes.
-\item[Structure]
-Outline the structure of the document 
+\item[Working Documents]
+\url{http://scc-intranet.lancs.ac.uk/Projects/2014/SmartFuse}
+
+\center{\tiny \textbf{Must login with valid Lancaster University Credentials.}}
 \end{description}
 \end{abstract}
 
-\maketitle
+\pprintMaketitle
+%DECLARATION
+
 \clearpage
 \tableofcontents
 \clearpage
 \section{Introduction \& Motivation}
 
-The world is increasingly looking for new ways to become more aware about the amount of energy that is actively being used everyday. From a high abstraction level, energy can be monitored from power plants as the energy grid is actively feeding back information to controllers that determine how much energy should be generated at various times throughout the day.
-
-However, the people that are responsible for drawing on the power from the energy grid aren't consciously aware of how much energy they are using in any detail. The only detail that the average energy conscious household owner has is an indication of how much energy is being used as a \textbf{household} - not per \textbf{device} or \textbf{appliance}.
-
-Being aware of how much energy consumption has benefits for both a persons economy and the environment on a global scale. There are existing products that allow users' to break down energy consumption per device, but none of these existing products are both discrete in their implementation and are simple to setup and use. 
+The world is increasingly looking for new ways to become more aware about the amount of energy that is actively being used everyday. From a high abstraction level, energy can be monitored from power plants as the energy grid is actively feeding back information to controllers that determine how much energy should be generated at various times throughout the day.\\
+However, the people that are responsible for drawing on the power from the energy grid aren't consciously aware of how much energy they are using in any detail. The only detail that the average energy conscious household owner has is an indication of how much energy is being used as a \textbf{household} - not per \textbf{device} or \textbf{appliance}.\\
+Being aware of how much energy one is consuming has benefits for both a persons economy and the environment on a global scale. Lowering energy consumption would also be beneficial to the National Grid and the energy companies, as they are looking to conserve energy as resources become scarcer.\\
+There are existing products that allow users' to break down energy consumption per device, but none of these existing products are both concealed from sight and are simple to setup and use. Other existing products provide accurate data without the ease of accessibility, whilst some provide accessible less accurate data. Many of the solutions are quite expensive for the features they offer, which is a barrier to consumers.\\
+There has also been a lot of research into per appliance energy monitoring, but in most cases the end result was a bulky device that would intrude in many environments.\\
+The methods of communication used by many of the research projects and existing products require a high level of infrastructure and setup.\\ 
+Therefore, there is a need for a solution that provides a low cost, low infrastructure solution to per appliance energy monitoring.
 
 
 \subsection{Existing Products}
@@ -192,9 +232,9 @@ There are a few products that already exist in the market that allow users to be
 
 \subsubsection{Meter Plug}
 
-Meter Plug ~\cite{mplug} is a crowdfunded idea to provide realtime information to your smartphone in order to aid energy consciousness. The device works by acting as a proxy to the main socket, the appliance requiring monitoring is plugged into the meter plug, which in turn plugs into the main socket. The user then receives real time updates via bluetooth to their smart phone.
+Meter Plug ~\cite{mplug} is a crowdfunded idea to provide real time information to your Smartphone in order to aid energy consciousness. The device works by acting as a proxy to the main socket, the appliance requiring monitoring is plugged into the meter plug, which in turn plugs into the main socket. The user then receives real time updates via Bluetooth to their smart phone.
 
-The design of the plug is minimalist, but this doesn't detract from its size: 37mm X 37 mm X 29mm. In figure 1 you can see the app and the plug side by side. The key aim of the Meter Plug is to save money. Along with the realtime power consumption figures, the user is presented with real time estimations of how much money is being spent per hour for the appliance. 
+The design of the plug is minimalist, but this doesn't detract from its size: 37mm X 37 mm X 29mm. In figure 1 you can see the app and the plug side by side. The key aim of the Meter Plug is to save money. Along with the real time power consumption figures, the user is presented with real time estimations of how much money is being spent per hour for the appliance. 
 
 The Meter Plug states that you can have more than one plug in the household, and the user is able to remotely turn appliances on and off remotely from up to 100 metres. There is also the ability to automatically turn off an appliance if it is in Vampire mode, where the appliance is consuming power even when it isn't being used.
 
@@ -211,7 +251,7 @@ The Meter Plug states that you can have more than one plug in the household, and
     \begin{itemize}
       \item \underline{Bulky} - The Meter Plug bulks up existing sockets, it isn't discrete
       \item \underline{Expensive} - The Meter Plug prices up at \pounds40, which for one plug is extremely expensive. 
-      \item \underline{Wireless} - The Meter Plug uses bluetooth LE, which has a range of around 100 metres in an open environment. However, in a household with various other technology and building materials, the range will be severely reduced.
+      \item \underline{Wireless} - The Meter Plug uses Bluetooth LE, which has a range of around 100 metres in an open environment. However, in a household with various other technology and building materials, the range will be severely reduced.
       \item \underline{Locality} - The basic premise of the device is that you need to be in range to see how much energy you are using, which in the common use case where the user is in the household, that would be fine. This product doesn't take into account the use case where the user is not in the house but still wants to monitor energy usage.
     \end{itemize}
     
@@ -230,7 +270,7 @@ Neurio ~\cite{neurio} is a product that makes monitoring power more accessible.\
 Neurio does breakdown data per appliance. It does this by analysing the consumption patterns exhibited by common household devices, matching them to a predetermined pattern, and is then able to determine the difference between an air conditioner, and a refrigerator for example. \\
 Unfortunately, the granularity of this product does not allow it to detect all appliances, though it claims to "account for more up to 80\% of the consumption in your home"~\cite{neurio-detection}.\\ Neurio has an open API that allows product developers to take advantage of the energy monitoring technology, and allows for the expansion of control features from the users' smartphone.
 
-Neurio works through attaching a wifi enabled sensor to the main power junction of the household. This sensor then feeds all it's data to the Neurio servers so that it can then be accessed on the users' device.
+Neurio works through attaching a Wifi enabled sensor to the main power junction of the household. This sensor then feeds all it's data to the Neurio servers so that it can then be accessed on the users' device.
 \begin{figure}[h]
     \centering
     \includegraphics[width=8cm]{existing/neurio-sensor}
@@ -244,7 +284,7 @@ Neurio works through attaching a wifi enabled sensor to the main power junction 
     \item \underline{Minimal} - The Neurio sensor is hidden from view, and is relatively small.
     \item \underline{Reasonably Priced} - Neurio prices up at \pounds55, which is a reasonable price for the ability to look at the overall energy consumption for a household. 
     \item \underline{Customisable} - Neurio is extensible though their development toolkit.
-    \item \underline{Realtime Data} - Data is transmitted every split second.
+    \item \underline{Real Time Data} - Data is transmitted every split second.
     \item \underline{Customisable} - Neurio can be integrated into IFTT (If then this that) and SmartThings to add additional features, i.e. when the washing machine turns on, you receive a push notification.
 \end{itemize}
     
@@ -295,13 +335,13 @@ There is a lot of related work in this field with the aims of aiding a user to b
 This section provides a brief overview of this related work and possible applications to this project.\\[5pt]
 The field of power measurement for home appliances is not a new field, it has been around for a long time.\\ As a result, there has been a huge amount of research into different methods of analysing appliances and displaying this data in an easy to understand format for a user to digest.\\
 Power signature analysis~\cite{laughman2003power} is a concept whose results can be seen in Neurio, discussed in existing products.\\ 
-Laughman and the team theorised that a distributed network of sensors may not be the best way of measuring current of various appliances, especially in large buildings where noise is unpredictable. Instead, they proposed an improvement to nonintrusive load monitoring whereby the harmonic characteristics of appliances were used as an identifier to detect and measure voltage at the electric utility service entry.\\
+Laughman and the team theorised that a distributed network of sensors may not be the best way of measuring current of various appliances, especially in large buildings where noise is unpredictable. Instead, they proposed an improvement to non-intrusive load monitoring whereby the harmonic characteristics of appliances were used as an identifier to detect and measure voltage at the electric utility service entry.\\
 This concept has been tried and tested, the results showing that the granularity of a system utilising this methodology will only be accurate with a small number of concurrent devices~\cite{liang2010load}.\\
 The alternative to the former, is a distributed network of sensors that feedback to a centralised server. In 2008, Bai and Hung investigated the capabilities of a low power embedded system for appliance control and current measurement using Zigbee for communicating data~\cite{bai2008remote}. Their work concluded with a low cost, low power, wireless embedded system that pertained to this architecture.\\
 There are a couple of issues with this solution. Firstly, the outlined architecture would not be able to scale to larger buildings. Larger buildings are subject to huge amounts of noise either corrupting packets or blocking them completely. The range of Zigbee would also be a factor in why this solution would not scale favourably, as an extreme example, a 50 storey building would not be a suitable deployment location. Moreover, the final solution was quite bulky, which would be an important factor in many deployment scenarios.\\ 
 Rather than using Zigbee for communication, Lien and the team investigated the use of communication over power line~\cite{lien2008power}. Their research lead them to a web based monitor and control platform for their distributed sensors. However, the sensors produced were large and obtrusive in their environment due to the demands and requirements of power line communication. On the other hand, their results were accurate, and integrated extremely well using the inbuilt architecture of the home. \\
-Lien and the team also investigated the applications of a remotely controlled outlet system in the household~\cite{lien2006remotely}. This research involved the use of Bluetooth to control appliances, and GSM to send commands to the controller. The downfall of their approach being that the bluetooth modules consumed a lot of power, had a limited range, and were affected by the noise of the environment.\\
-The importance of current monitoring is paramount, but it is also important to relay this information to a user in an easy to understand format so that a user can then ammend their behaviour dependant on the information displayed.\\
+Lien and the team also investigated the applications of a remotely controlled outlet system in the household~\cite{lien2006remotely}. This research involved the use of Bluetooth to control appliances, and GSM to send commands to the controller. The downfall of their approach being that the Bluetooth modules consumed a lot of power, had a limited range, and were affected by the noise of the environment.\\
+The importance of current monitoring is paramount, but it is also important to relay this information to a user in an easy to understand format so that a user can then amend their behaviour dependant on the information displayed.\\
 There have been a number of studies that have investigated the repercussions of energy consumption feedback for users.\\
 Costanza in 2012 investigated the importance of Interactive Visualisation in aiding the conservation of energy~\cite{costanza2012understanding}. The paper illustrated that the participants of the study found the engaging nature of the software helped them to identify heavy consumption appliances. In the paper the notion of an activity was introduced, as the participants went about their daily tasks, they were able to associate appliance usage with their activity. \\
 A paper was also written on the openness and visibility of energy data, and detailed the methodology of how to design digital technologies to better describe the energy their home is consuming~\cite{price2013looking}. Various different interfaces were trialed and tested, and the results showed that these interfaces benefited households positively and affected their day to day activies.
@@ -311,7 +351,7 @@ These papers show that engaging visualisations affect user behavior, and these v
 
 \subsection{Conclusions}
 The selected existing products are from the same area of the market, but each performs the task of energy measurement very differently.\\
-The apparent conclusion from the existing products section is there isn't a product on the market that is low cost, low power, discrete in its implementation, accurate and has a per appliance granularity combined with the convenience of accessing data through the use of mobile devices.\\
+The apparent conclusion from the existing products section is there isn't a product on the market that is low cost, low power, unobtrusive in its environment, accurate and has a per appliance granularity combined with the convenience of accessing data through the use of mobile devices.\\
 The related work section highlights areas which a high concentration of research and time has been invested. The research conducted in this field is invaluable, but there are areas where the research is lacking.\\
 Laughman's work determined that using the electric utility service entry as a single point of monitoring was an extremely successful approach to the issue at hand. The downsides of the approach being accuracy, as it didn't scale to a large number of devices.\\
 Bai's work investigated the use of a network of sensors reporting to a centralised hub, to produce monitoring data for a large number of appliances. This architecture would scale really well if the range of the Zigbee's was unaffected by noise.\\
@@ -329,8 +369,8 @@ Through the analysis provided in the previous section, there are a number of req
   \item \underline{Minimalist}- The devices design should be simple and not overly complex.
   \item \underline{Low power} - The device shouldn't consume a lot of energy, as that would defeat the aim of the device.
   \item \underline{Low cost} - The device should be inexpensive, so that the technology is easily accessible to all.
-  \item \underline{Simple to install and use} - The device should work "out of the box" and require minimal setup and installation.
-  \item \underline{Accessible data}  - The data produced should be instantly accessible through either a web interface or smartphone app.
+  \item \underline{Simple to install and use} - The device should work out of the box and require minimal setup and installation.
+  \item \underline{Accessible data}  - The power consumption data should be instantly accessible through either a web interface or smartphone app.
   \item \underline{Real time} - The data produced and displayed should be real time and up to date.
   \item \underline{Breaks down data per appliance} - The data produced should be tied to a particular appliance so that the user can visually identify each device.
   \item \underline{Reliable} - The device should be reliable and require minimal maintenance.
@@ -339,19 +379,43 @@ Through the analysis provided in the previous section, there are a number of req
 \clearpage
 \section{Background}
 \subsection{System Outline}
+Using the information gathered about existing research into this space, a few architectural components can be derived:
+
+\begin{itemize}
+\item Appliance sensor - There will need to be a small device used to sense the current being used by the appliance. This device will need to be able to communicate using a wired medium.
+\item Central hub - There will need to be a device that listens for packets being transmitted by the current sensor, and it must be able to process them and forward them onto a server.
+\item Server - There will need to a server, that will be used to store, access and manipulate the data provided by the central hub.
+\item Application - There will also need to be an application so that the user can see the data reported by the current sensor.
+\end{itemize}
+
+In the Related Research section, investigations have already been performed on the use of Zigbee, Bluetooth and Powerline communications as a method of reporting the sensor data. However, these solutions were all bulky and consumed quite a lot of power. One method of communication that wasn't considered was the use of the Earth line of a building.\\
+The use of the Earth line would provide a network of distributed sensors, all communicating towards a centralised exit point. Placing the central hub at the exit point would enable the sensing of packets transmitted from the current sensors.\\
+A visualisation of this proposed system can be seen in Figure~\ref{fig:proposed}.
 \begin{figure}[H]
     \centering
     \includegraphics[width=\columnwidth]{diagrams/overalldescript}
     \caption {The proposed system.}
+    \label{fig:proposed}
 \end{figure}
-\subsection{Fuse}
+The Appliance sensors will report power consumption for appliances using the Earth line as the communication medium.\\
+The Central hub will be placed at, or near the exit point of the Earth line, so to gather packets transmitted on the Earth line as all packets will travel in the same direction, towards Earth.\\
+The Central hub will then be connected to the Server through the Internet using Wifi or Ethernet as the communication medium. When a hub detects a packet, it will then transmit the received data to the Server.\\
+The Server contains all data generated by the sensors used in the platform. The Server is also able to serve the information contained to clients.\\
+The Application provides core visualisations and insights into the data gathered by the sensors. The application will access the data stored on the Server and present it to Users in an easy to digest format.\\
+The proposed to system adheres to all of the top level requirements generated in the Introduction as will be described in the following sections.
+
+\clearpage
+\subsection{Appliance sensor}
+In the System Outline section a method of monitoring the power consumption of an appliance was described as a core component. This section briefly discusses the options for a small, low cost embedded device to perform this operation, which aligns with the overall top level requirements.
+
 \subsubsection{Hardware Selection}
 Based on the requirements, an embedded system seems to be the most applicable technology to this aspect of the project\\
-Todays market consists of a large number of embedded devices built for a huge range of tasks.\\
-This section will determine the best hardware for the monitoring of appliances.
+Todays market consists of a large number of embedded devices built for a huge range of tasks. There are many manufacturers of these chips such as Freescale, ARM and Texas Instruments, and there are far too many different chips to compare.\\
+This section will determine the chip best suited to the task from one manufacturer, Microchip.
+
 \paragraph{PIC10F322}
-The 10F322~\cite{10f322} is a small surface mount PIC. Counter to the 16f1788, the 10F322 is smaller, far cheaper only costing 56 pence for amounts over 100.
-The 10f322 also draws far less power around \SI{0.8}{\micro\ampere} at 32khz.\\
+The 10F322~\cite{10f322} is a small surface mount PIC. The 10F322 is smaller, and is relatively cheap costing 56 pence for amounts over 100.
+The 10f322 also draws a small amount of power around \SI{0.8}{\micro\ampere} at 32khz.\\
 The downsides to using this pic would be that it has no on board serial module. This would increase development time, which may skew other factors of the project.\\
 However this PIC would be more suited to a production environment because of its size and price.
 %pros
@@ -383,15 +447,17 @@ The power draw of the circuitry is around \SI{8}{\micro\ampere} at 32khz, which 
 
 
 \subsubsection{Conclusions}
-The 16f1788 would be the ideal PIC for testing and developing the circuitry for the Fuse. However, when entering production, the 10f322 would be the PIC of choice due to its size, price and selection of components.
+The 16f1788 would be the ideal PIC for testing and developing the circuitry for the Appliance sensor. However, when entering production, the 10f322 would be the PIC of choice as it aligns far better with the top level requirements due to its size, price and selection of components.\\
 
 
-
+\clearpage
 \subsection{Hub}
+In the System Outline section, a Hub that detects packets transmitted by an Appliance Sensor was described. This component would listen for packets transmitted on the Earth Line, processes and validates the received packets, and stores them on a server.\\
+This section provides a brief overview of the different possible options in terms of hardware for this specific component.
 \subsubsection{Hardware Selection}
-The requirements dictate that something more powerful than a traditional embedded system will need to be used to process and store the data generated by the Fuses.\\
+The requirements dictate that something more powerful than a traditional embedded system will need to be used to process and store the data generated by the Appliance sensors.\\
 The hardware will need to be able to have either wired or wireless Internet connectivity, as well as being low cost, low power and able to process quite a lot of data.\\
-Over recent years, a lot of money has been used to create affordable, small, powerful computers that are widely available.\\
+Over recent years, a lot of investment has been placed with the aim of creating affordable, small, powerful computers that are widely available, which would be suited to this aspect of the project.\\
 This section will compare key players in this market to determine the hardware that will be utilised in this project.
 \paragraph{Raspberry Pi}
 The Raspberry Pi~\cite{raspberrypi} is the most well known member of this market, and with the most recent introduction of the Raspberry Pi 2, is a strong market leader as well.\\
@@ -399,65 +465,39 @@ The Raspberry Pi has a number of hardware components that can be controlled by a
 The Raspberry Pi costs around \pounds30 depending on the model. It comes with Ethernet as standard, but external modules can be added to introduce other technologies such as WiFi and Bluetooth. This will obviously incur additional costs.\\
 The power consumed by the Pi on average is around \SI{700}{\milli\ampere} which is really low for such a powerful computer.
 
-
 \paragraph{Hummingboard}
 The Hummingboard~\cite{hummingboard} is a relatively new player in the market.\\
 It's more expensive (\pounds15 more) than the Raspberry Pi, but offers more RAM, and a faster processor.\\
 Like the Raspberry Pi, it offers GPIO and UART built in. Ethernet is also offered as standard, but again like the Raspberry Pi, for an additional amount, WiFi and Bluetooth can be added.\\
-The operating system is based off linux, so it has support for quite a lot of the standard linux distributions, much like the Raspberry Pi.\\
-The Hummingboard slightly consumes more power than the Raspberry Pi, approximately \SI{780}{\milli\ampere} in total, but this would make a negligible difference overall.
+The operating system is Linux based, so it has support for quite a lot of the standard Linux distributions, much like the Raspberry Pi.\\
+The Hummingboard consumes slightly more power than the Raspberry Pi, approximately \SI{780}{\milli\ampere} in total, but this would make a negligible difference overall.
 \paragraph{Beaglebone Black}
 The Beagle Bone~\cite{beaglebone} prices \pounds5 above the Raspberry Pi and offers a 1gHz processor instead of the Pi's 700 mHz one.\\
-It doesn't have inbuilt UART for serial communications, but it does have a large number of GPIO pins.\\
-The power consumed by the Beaglebone is half that of the Raspberry Pi, with \SI{350}{\milli\ampere}. However it is missing components that the Raspberry Pi does have.
+
+The power consumed by the Beaglebone is half that of the Raspberry Pi, with \SI{350}{\milli\ampere} and it has a large number of GPIO pins. However, it doesn't have inbuilt UART for serial communications.\\
+
+\paragraph{Summary Table}
+\begin{tabular}{| l | l | l | l |}
+    \hline
+          & Raspberry Pi & Hummingboard & Beaglebone Black \\ \hline
+    Small & \checkmark & \checkmark & \checkmark\\ \hline
+    Low power & \checkmark & \checkmark & \checkmark\\ \hline
+    Low cost & \checkmark & \xmark & \xmark\\ \hline
+    Simple to install and use & \checkmark & \checkmark & \checkmark\\ \hline
+    Reliable & \checkmark & \checkmark & \checkmark\\ \hline
+\end{tabular}
 
 \subsubsection{Conclusions}
 It appears that the best candidate for the hub element of this project is the Raspberry Pi.\\
-It is the cheapest, and offers a wide range of features as well consuming a small amount of energy. The measurements taken were from the original Model B, and at the time of writing, the Raspberry Pi 2 has just been released, offering improved features for the same price.
+It is the cheapest, and offers a wide range of features as well consuming a small amount of energy. The measurements taken were from the original Model B, and at the time of writing, the Raspberry Pi 2 has just been released, offering improved features for the same price.\\
+The Raspberry Pi aligns with most of the applicable top level requirements, except for the requirement of minimalism, as the Raspberry Pi is quite complex.
 
-
-
-
-
-\subsection{App}
-\subsubsection{Frameworks}
-In the previous section, the MEAN stack was chosen as the preferable stack. The element applicable to client-side applications in the MEAN stack is Angular.\\
-As previously mentioned Angular~\cite{angular} uses the MVC model to control and display data to a user. Traditionally, Angular is only used in web applications, more recently however, Web Frameworks are moving into the cross platform world.
-
-\paragraph{Ionic}
-Ionic~\cite{ionic} is a framework created by 'Drifty', and is powered by Angular JS, conforming to the MEAN stack requirement.\\
-It is a high performance, native focused, beautifully designed, cross platform framework allowing for rapid yet stable development.\\
-Currently, the cross platform element supports only iOS and Android, but Windows phone and FirefoxOS are coming soon.\\
-Ionic utilises Angular lending itself to the MVC architecture, which allows the compartmentalisation of the app.\\
-Like many mobile frameworks, it has a vast amount of built in components, to make the final app look and feel native to the platform.\\ PhoneGap~\cite{phonegap} and Cordova~\cite{Cordova} are used to wrap the HTML, CSS and JavaScript produced by Ionic and hosts them using native binaries.
-
-\paragraph{Ratchet}
-Ratchet~\cite{ratchet} was developed by Connor Sears who worked at twitter and need a way of rapidly prototyping new UI ideas for the native Twitter app.\\
-Unlike Ionic, this framework doesn't use Angular, and uses native javascript to perform UI interactions.\\
-This may make app development worse due to the lack of compartmentalisation, and as the project scales, source code will be harder to maintain and update.\\
-Ratchet also has a number of built in UI components, however it seems like Ratchet doesn't make any effort to appear native to the platform.\\
-It also doesn't adhere to the MEAN stack as it doesn't intertwine with Angular, and it seems like this framework is more focused on prototyping than on formal app development.
-
-\paragraph{Famo.us}
-Famo.us~\cite{famous} is an extremely new framework, and is in very early stages of Beta, the current version being 0.3 at the time of writing.\\
-This framework can easily be integrated with Angular, matching the MEAN stack requirement.\\
-This framework claims to be a platform for building high-performance user interfaces that can be used to display complex animations and has an inbuilt physics engine to support games development.\\
-Although this framework simplifies UI development, it doesn't simplify the overall app development like the Ionic framework does.\\
-It's also in early development, and appears to not offer as many features as Ionic or Ratchet.
-
-\subsubsection{Conclusions}
-The framework that meets the most requirements appears to be the Ionic Framework.\\
-It offers great performance, a huge range of UI tools, Angular at it's core and cross platform support.\\
-It has a great support community behind it, and it is well established in the development world.\\
-These combined factors make it in obvious choice for the basis of the application for the project.
-
-
-
-
+\clearpage
 \subsection{Server}
-
+A Server was described as a core component in the System Outline section. The Server would act as a central point for data storage and retrieval.\\
+This section compares the options for both the Web Server and Database aspects of the server, and concludes with the selected Database and Web Server software.
 \subsubsection{Web Server}
-There are a number of web server packages out there, the most popular being Apache.\\
+There are a number of web server packages available, the most popular being Apache.\\
 Apache has been around for a long time, and the most common stack for an Apache server is LAMP: Linux, Apache, MySQL and PHP.\\
 Considering that the system will be receiving a large amount of data, will be used in conjunction with a cross platform app and the system will be event driven, the aforementioned Apache LAMP stack may not necessarily be the best choice.\\
 There are many modern variations and implementations of web servers around today, developers no longer need to transition between different languages. Python developers can transition to Django, a Python web server. They can build apps using python, transition to the server side development environment, and build the API. The story is the same with Ruby, Perl and more recently, JavaScript.\\
@@ -472,11 +512,11 @@ When comparing Node to the traditional Apache LAMP stack~\cite{phpvsnodejs}~\cit
 \begin{itemize}
   \item \underline{Scalable} - Node works concurrently, the number of users makes no difference to the page load time, improving the aspect of scalability.
   \item \underline{Lower Costs}- Nodes concurrency removes the issue of concurrent users impacting load times, this means that less physical resources will be required.
-  \item \underline{Fast} - As Node is concurrent, pages load lightning quick, improving the experience for the end user.
+  \item \underline{Rapid} - As Node is concurrent, pages load lightning quick, which allows data to be served extremely quickly to the client.
 \end{itemize}
 
 \paragraph{Django}
-Django~\cite{django}, unlike Node.js, can be configured to be layered upon a number of base web servers, and is a Web Framework.\\
+Django~\cite{django}, unlike the MEAN stack, can be configured to be layered upon a number of base web servers, and is a Web Framework.\\
 In the traditional LAMP model, Django takes the place of PHP, and instead uses Python to construct the application.\\
 As PHP is a language, it can only be compared to Python in this case. The performance of Python~\cite{djangovsphp} is 2-3 times faster than PHP, but also used 2 times as much memory. So there is a trade off between performance and server resources which would be important when scaling the solution.
 
@@ -484,15 +524,25 @@ As PHP is a language, it can only be compared to Python in this case. The perfor
 Ruby on Rails~\cite{ruby} is similar to Django, it is a web framework, and it acts as a replacement for the PHP element of the LAMP stack.\\
 As PHP is a language, it can only be compared to Ruby in this case. The performance of Ruby~\cite{rubyvsphp} is 2-4 times faster than PHP, but again uses more memory, and thusly there is yet again a trade off between performance and server resources, affecting scalability.
 
+\paragraph{Summary Table}
+\begin{tabular}{| l | l | l | l |}
+    \hline
+          & Mean Stack & Django & Ruby on Rails \\ \hline
+    Scalable For A Huge Number of Connections & \checkmark & \xmark & \xmark\\ \hline
+    Rapid Development & \checkmark & \checkmark & \checkmark\\ \hline
+    Event Driven & \checkmark & \xmark & \xmark\\ \hline
+    Minimalist & \checkmark & \xmark & \xmark\\ \hline
+\end{tabular}
+
 
 \subsubsection{Database}
-The database is an important consideration in any project. In the previous section, it was determined that a solution involving MEAN stack was preferable over the more traditional LAMP stack solution.\\
+The database is an important consideration in any project. In the Web Server section, it was determined that a solution involving MEAN stack was preferable over the more traditional LAMP stack solution.\\
 The database layer is separate, but at the same time is intertwined with the server layer. This means that there needs to be a relatively easy way of communicating between the two layers.\\
 This section will compare various database solutions applicable to the kind of project discussed in this document: the Internet of things.\\
 
 \paragraph{MongoDB}
 MongoDB~\cite{mongodb} harnesses the benefits of a NoSQL database, but at the same time retains the relational aspects of SQL.\\
-Documents are stored using JSON documents, and B-Trees are used for quick look up times.MongoDB also scales across a number of servers using Passive server replication.\\
+Documents are stored using JSON documents, and B-Trees are used for quick look up times. MongoDB also scales across a number of servers using Passive server replication.\\
 It's best used for real time systems, with rapidly changing data~\cite{databasecomparison}, which is directly applicable to the project.\\
 It's also worth considering that the rest of the stack uses the *EAN model. Thus the majority of development will be in Javascript, implying that it might be best to store objects in JSON for easy storage and retrieval. MongoDB's main storage format is JSON, it will therefore be easy to integrate with the rest of the stack. 
 
@@ -500,7 +550,7 @@ It's also worth considering that the rest of the stack uses the *EAN model. Thus
 Redis~\cite{redis} is an advanced key-value cache and store. It stores data in traditional data structures, like Strings, Hashes and many more.\\
 Redis stores all objects in memory, which may make it unsuitable for the project in the long term. A user can however partition memory across server machines~\cite{redisfaq}, so that Redis can expand beyond the limits of a single machines.\\
 The issue with redis is that there isn't a direct translation between database and server like there is in MongoDB, which may make storage and retrieval difficult. It is also far easier to increase disk space than it is RAM.\\
-Redis is best used for projects with rapidly changing data with a foreseeable database size~\cite{databasecomparison}. In this project, the database size is not fully predictable due to a number of variables, like the number of Fuses and the number of Hubs a user may own.
+Redis is best used for projects with rapidly changing data with a foreseeable database size~\cite{databasecomparison}. In this project, the database size is not fully predictable due to a number of variables, like the number of Appliance sensors and the number of Hubs a user may own.
 
 \paragraph{CouchDB}
 CouchDB~\cite{couchdb} is written in Erlang, and stores data in JSON format. CouchDB uses HTTP requests to perform CRUD (Create, Read, Update, Delete) operations on the data. 
@@ -511,29 +561,116 @@ The interesting concept behind this is that CouchDB can actually act as the appl
 CouchDB unfortunately doesn't offer dynamic queries, instead offering map/reduce functions. It's also not relational, both of which will impact performance in the long term.\\
 CouchDB is best used for accumulating occasionally changing data, where queries have to be predefined~\cite{databasecomparison}. In the project, data is dynamic and constantly changing, CouchDB is not. This factor, in combination with the non-relational nature of CouchDB, renders it unusable in this project.
 
+\paragraph{Summary Table}
+\begin{tabular}{| l | l | l | l |}
+    \hline
+          & MonogoDB & Redis & CouchDB \\ \hline
+    High Performance & \checkmark & \checkmark & \xmark\\ \hline
+    Suitable for Dynamic Data & \checkmark & \checkmark & \xmark\\ \hline
+    Easy Storage and Retrieval & \checkmark & \xmark & \checkmark\\ \hline
+    Compatible with the MEAN stack & \checkmark & \checkmark & \checkmark\\ \hline
+\end{tabular}
+
 \subsubsection{Conclusions}
 The MEAN stack seems to be the obvious conclusion from the comparison above. Scalability and performance are key factors in this decision. As the system becomes more widely used, more requests will be received. A stack like the MEAN stack where the number of requests makes little or no impact is ideal.\\
-Development time is also another key factor. Using the MEAN stack will result in faster development, and it will be easy to integrate the resulting API into Angular for a cross platform app, rather than two entirely separate native apps for Android and iOS.
+Development time is also another key factor. Using the MEAN stack will result in faster development, due to the rapid nature of Node and the rest of the stack.\\
+The MEAN stack also aligns with the top level requirements. It is scalable, reliable, minimalist, simple to install and use, and it is real time due to its event driven nature.
+
+\clearpage
+\subsection{Monitoring Visualisation Application}
+In the System outline, the Application acts as the bridge between the data aggregation and data visualisation.\\
+The Application would provide visualisations of the data gathered by the sensors, and display it in an easy to digest format for the User.\\
+This section will compare and contrast the different options for creating the application, and conclude with the chosen technology.
+
+\subsubsection{Frameworks}
+Accessibility is an important requirement for this project, and as such an application that is available to only one platform would tarnish this requirement.\\
+To complete two fully featured applications native to each of the key platforms (iOS and Android) would take a long period of time. Because of this, a cross platform app would be the best choice, and would allow the development of the application for multiple platforms simultaneously.
+In the previous section, the MEAN stack was chosen as the preferable application stack. The element applicable to client-side applications in the MEAN stack is Angular. A cross platform solution that integrates with Angular would be ideal and would decrease the development time for the project further.
+
+\paragraph{Ionic}
+Ionic~\cite{ionic} is a framework created by a company called Drifty, and is powered by Angular JS, conforming to the MEAN stack requirement.\\
+It is a high performance, native focused, cross platform framework allowing for rapid yet stable development.\\
+Currently, the cross platform element supports only iOS and Android, but Windows phone and FirefoxOS are coming soon.\\
+Ionic utilises Angular lending itself to the MVC architecture, which allows the compartmentalisation of the app.\\
+Like many mobile frameworks, it has a vast amount of built in components, to make the final app look and feel native to the platform.\\ PhoneGap~\cite{phonegap} and Cordova~\cite{Cordova} are used to wrap the HTML, CSS and JavaScript produced by Ionic and presents them in a full screen web view.
+
+\paragraph{Ratchet}
+Ratchet~\cite{ratchet} was developed by Connor Sears who worked at twitter and need a way of rapidly prototyping new UI ideas for the native Twitter app.\\
+Unlike Ionic, this framework doesn't use Angular, and uses native javascript to perform UI interactions.\\
+This may make app development more difficult due to the lack of compartmentalisation, and as the project scales, source code will be harder to maintain and update.\\
+Ratchet also has a number of built in UI components, however it seems like Ratchet doesn't make any effort to appear native to the platform.\\
+It also doesn't adhere to the MEAN stack requirement as it doesn't intertwine with Angular, and it seems like this framework is more focused on prototyping than on formal app development.
+
+\paragraph{Famo.us}
+Famo.us~\cite{famous} is an extremely new framework, and is in very early stages of Beta, the current version being 0.3 at the time of writing.\\
+This framework can easily be integrated with Angular, matching the MEAN stack requirement.\\
+This framework claims to be a platform for building high-performance user interfaces that can be used to display complex animations and has an inbuilt physics engine to support games development.\\
+Although this framework simplifies UI development, it doesn't simplify the overall app development like the Ionic framework does.\\
+It's also in early development, and appears to not offer as many features as Ionic or Ratchet.
+
+\paragraph{Summary Table}
+\begin{tabular}{| l | l | l | l |}
+    \hline
+          & Ionic & Ratchet & Famo.us \\ \hline
+    Stable & \checkmark & \checkmark & \xmark\\ \hline
+    Native Look and Feel & \checkmark & \xmark & \checkmark\\ \hline
+    Feature Rich & \checkmark & \xmark & \xmark\\ \hline
+    Compatible with the MEAN stack & \checkmark & \xmark & \checkmark\\ \hline
+\end{tabular}
+
+\subsubsection{Conclusions}
+The framework that meets the most requirements appears to be the Ionic Framework.\\
+It offers great performance, a huge range of UI tools, Angular at it's core and cross platform support.\\
+It has a great support community behind it, and it is well established in the development world. These combined factors make it in obvious choice for the basis of the application for the project.\\
+The Ionic framework neatly aligns with the top level requirements, and its use would provide an accessible, real time, per appliance view of the data gathered by the application.
+
+\clearpage
+\subsection{Existing APIs}
+As mentioned in the related research section, data visualisation can influence user behaviour. As such, it would be interesting to include external APIs to the project to enhance the information provided to the User.\\
+Dr. Adrian Friday recommended 4 APIs that would provide real time information that could influence users to change their behaviour when it comes to turning on large appliances.
+
+
+\subsubsection{Carbon Intensity}
+The first API that was recommended was the Carbon Intensity API, which is an xml file that details the current carbon intensity level, as well as the historic carbon intensity level for the UK. This can be accessed using the following url:\\[5pt]
+\url{http://www.earth.org.uk/_gridCarbonIntensityGB.xml}\\[5pt]
+The insights provided by this API are numerous. The information could potentially influence users to change the times at which they use large appliances through the presentation of the level of carbon in the UK. If the carbon level is high or medium, a user might be dissuaded from putting on large appliances.\\
+Damon Hart-Davis, the creator of this API, was contacted to ensure that the harvesting of this API would not affect the service offered by the full site:\\[5pt]
+\url{http://www.earth.org.uk/_gridCarbonIntensityGB.html}
+
+\subsubsection{Energy Prices}
+Another data set that could be relevant to Users is energy prices.\\
+The current energy prices can be obtained from the following URL:\\[5pt]
+ \url{http://www.nordpoolspot.com/api/marketdata/page/1639}\\[5pt]
+Historic energy prices can be obtained from this URL:\\[5pt]
+ \url{http://www.nordpoolspot.com/api/marketdata/page/4708}\\[5pt]
+The ability to view live and historic energy prices could influence power consumption by a User who is on a variable price tariff.\\
+A variable price tariff is where the price of the energy billed by the supplier reflects the actual price of the energy market at that time. The presentation of this data may influence users to wait until energy prices are not at their peak.\\
+Peaks in the prices occur when the grid is under the most load. For example, at 7pm after various TV shows have finished, there is a peak in the energy prices due to everyone boiling their kettles.\\
+Energy price also correlates with the historic carbon levels in the UK, therefore the presentation of this information would also influence Carbon Intensity, even if the User was concerned only with the energy prices.\\
+NordPoolSpot~\cite{nordpoolspot}, is Europe's leading power market, and it offers a fully open API to fetch market data historically or predictions for the day ahead.
+
+\subsubsection{Generation Statistics}
+The use of generation statistics would be more for interest than influencing user behaviour.\\
+From the following URL, current generation and historic generation details can be obtained:\\[5pt]
+ \url{http://www.bmreports.com/bsp/additional/soapfunctions.php?element=generationbyfueltypetable}\\[5pt]
+The details returned by the API provide insights into energy generation by energy sources for the UK.
+BMReports~\cite{bmreports} provides an open API to query data sets pertaining to energy generation. The data is generated by the Balancing Mechanism used by the National Grid, which controls the flow on and off the electricity grid system.
+ 
+\subsubsection{Conclusions}
+The use of the APIs mentioned in this section, used in conjunction with a good graphical user interface, would benefit the Users of the application through providing access to data that isn't widely used by front facing applications.\\
+It would also provide data visualisation opportunities that could influence user behaviour, through the provision of this real time information.\\
+The use of the APIs also aligns with the top level requirement of accessible data, and meets the visualisation aims of the project.
+
 
 
 
 \clearpage
  %--------------------------
- %DESIGN
+ %DESIGN & Implementation
  %--------------------------
 
 \section{Design \& Implementation}
-\subsection{Use Case Diagram}
-\begin{figure}[H]
-    \includegraphics[width=\columnwidth]{diagrams/UseCase}
-    \caption {Use Case Diagram}
-    \label{fig:usecaseoverall}
-\end{figure}
-Figure~\ref{fig:usecaseoverall} shows the use case diagram for the system.\\
-A \textbf{User} can perform various actions, they can get, edit and delete data, and they can also login and register.\\
-A \textbf{Fuse} can only report appliance data, and transmit it over the Earth line.\\
-A \textbf{Hub} can receive data from a \textbf{Fuse}, report data and also register with the \textbf{Server}.\\
-The Server can store and serve the data stored in the database.
+The section outlines the design and implementation of each component discussed in the background section the overall system architecture is also described.
 
 \subsection{Overall System Architecture}
 \begin{figure}[H]
@@ -542,60 +679,42 @@ The Server can store and serve the data stored in the database.
     \label{fig:systemarchoverall}
 \end{figure}
 
-Figure~\ref{fig:systemarchoverall}
+Figure~\ref{fig:systemarchoverall} is the proposed system architecture for the project.\\
+There are four key components: the Server, the Cross Platform Application, the Hub and the Appliance Sensor. These four components are based upon the components derived in the Background section.\\
+The architecture diagram describes the compartmentalisation of the four different components and the connections between each component.\\
+The appliance sensor can only communicate with the Hub, the Hub can only communicate with the server, and the application can only communicate with the server.\\
+The Appliance Sensor consists of two subsystems, the analogue to digital converter which is responsible for monitoring the the current consumed by an appliance, and the communications subsystem which is responsible for communicating data using the ground line.\\
+The Hub has three subsystems. The Comms subsystem is responsible for communicating received packets to the server, the API subsystem is responsible for determining what to communicate to the server via the Comms subsystem. The Packet Listener subsystem listens for packets communicated over the Earth line, the Packet Listener will then pass the data received to the API subsystem which will communicate the data to the server using the Comms system.\\
+The Server also has three subsystems. The RESTful API subsystem offers data through a well-defined API adhering to the RESTful principles. The Database subsystem offers a way of storing and retrieving information provided by the RESTful API and Web Frontend subsystems. The Web Frontend subsystem serves simple web pages that provide information about the project, it talks to the database subsystem to retrieve required information.\\
+The Cross Platform App has four subsystems. It adheres to the MVC architecture, imposed by the Ionic framework as discussed in the background section. The Controller subsystem handles actions performed by the user and communicates with the View and Model subsystems to impose updates. The Model subsystem handles the storage and retrieval of data used in the application, it communicates with the Database and provides a layer of abstraction. The UI View subsystem is the visible interface, which is updated using the controller. 
 
 
- %--------------------------
- %Implementation
- %--------------------------
-
-
-
-
-
-
-\subsection{Fuse}
-The Fuse consists of a PIC16f1788 running custom assembly software. The schematics of the circuit, and the overall software architecture of the Fuse are described in this section.
+\clearpage
+\subsection{Appliance sensor}
+The Appliance sensor consists of a PIC16f1788 running custom assembly software. The schematics of the circuit, and the overall software architecture of the Appliance sensor are described in this section.
 
 \subsubsection{Requirements}
 \begin{itemize}
-\item \underline{Transmit Data} - The Fuse should transmit data using the Earthed line.
-\item \underline{Accurate} - The Fuse should be accurate with its samples.
-\item \underline{Small} - The Fuse should be small.
-\item \underline{Low Cost} - The Fuse should be low cost.
-\item \underline{Low Power} - The Fuse should not consume a large amount of power.
+\item \underline{Transmit Data} - The Appliance sensor should transmit data using the Earthed line.
+\item \underline{Accurate} - The Appliance sensor should be accurate with its samples.
+\item \underline{Small} - The Appliance sensor should be small.
+\item \underline{Low Cost} - The Appliance sensor should be low cost.
+\item \underline{Low Power} - The Appliance sensor should not consume a large amount of power.
 \end{itemize}
-
-\subsubsection{Architecture Diagram}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=8cm]{diagrams/fuse}
-    \caption {Fuse Architecture Diagram}
-\end{figure}
-\subsubsection{Schematics}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=8cm]{/schematics/fuse}
-    \caption{The schematic for the fuse.}
-    \label{fig:fuseschematic}
-\end{figure}
-Figure~\ref{fig:fuseschematic} shows the schematic for the current implementation of the fuse.\\
-Currently the input for the fuse is a voltage divider using two 100K resistors across VREF+, which is then connected to RB3, the input for the ADC.\\
-There are two status LEDs. LED1 shows the on state of the fuse, when the fuse transmits LED2 will light up for the duration of transmission.\\
-The fuse transmits using pin RC7 to a faux Earth line connected to the hub. This line is protected using a 320 ohm resistor.
-
+The PIC16f1788 matches all of the applicable overall top level requirements as well as those specified above, aside from one aspect, the PIC16f1788 isn't minimalist.\\
+The PIC16f1788 as discussed in the Background is more suited to testing and development than production. If the system were to move to production, the PIC10f322 would be used, which would match all of the requirements.
 
 \subsubsection{Software}
-The software for the Fuse is written in assembly.\\
+The software for the Appliance sensor is written in assembly.\\
 Assembly is used for extremely low level embedded devices. The reason assembly has been chosen is because it offers a level of accuracy that is extremely hard to achieve through using a higher level language like C.\\
 
-\paragraph{Average Over Time}
-The Fuse generates data that can be used to generate an average over time.\\
+\paragraph{Current Sensing}
+The Appliance sensor generates data that can be used to generate an average over time.\\
 When a sample is collected by the ADC, the sample count is incremented and the ADC result is added to a sum.\\
-When the fuse transmits, the packet contains the sample count and the sum of all of the samples currently held in memory. The average voltage is then calculated on the Hub, and sent to the server.
+When the Appliance sensor transmits, the packet contains the sample count and the sum of all of the samples currently held in memory. The average voltage is then calculated on the Hub, and sent to the server.
 
-\paragraph{Extended Hamming Code}
+\subsubsection{Communication Principles}
+Referring back to Figure~\ref{fig:proposed}, communication occurs over the Earth line. The Hub is placed towards the end of the Earth line, and uses a current sensor to detect packets.\\
 To provide robust transmission down a usually noisy line, there needs to be a form of error correction in place.\\
 The chosen form of error correction is Extended Hamming Code, due to it's extensive use throughout the industry.\\
 Each byte will be encoded before transmission in a 4:8 encoding ratio. This means every 4 bits will produce a byte when encoded.\\
@@ -629,14 +748,14 @@ In Extending Hamming Code, each nibble is encoded using a look up table:
 }
 \caption{Hamming code translations}
 \end{table}
-Once the nibble is encoded, the byte is transmitted using RS232. Hamming encoding will be discussed again later on in this document, with a further explanation of how it works.
+Once the nibble is encoded, the byte is transmitted using RS232 via the Earth Line. Hamming encoding will be discussed again later on in this document, with a further explanation of how it works.
 
 \paragraph{Random Transmission}
-The timings between each transmission is 'random'. This randomness is generated through the incrementation of a variable throughout various points in the code. When this variable hits a specific value, data will then be transmitted. \\
-The reason for random transmission is to reduce collisions on the line. The hope is that through using a randomised variable, fuses will transmit at different times.
+The timings between each transmission is `random'. This randomness is generated through the incrementation of a variable throughout various points in the code. When this variable hits a specific value, data will then be transmitted. \\
+The reason for random transmission is to reduce collisions on the line. The hope is that through using a randomised variable, Appliance sensors will transmit at different times.
 
 \paragraph{Packet Structure}
-The following details the packet structure that is transmitted by the Fuse.\\
+The following details the packet structure that is transmitted by the Appliance sensor.\\
 The packet consumes 7 bytes. Due to hamming code, this packet size is doubled, making the final packet size 14 bytes.\\[5pt]
 \begin{table}[H]
 \centering
@@ -660,7 +779,7 @@ The packet consumes 7 bytes. Due to hamming code, this packet size is doubled, m
 \end{table}
 \underline{Packet Description}
 \begin{itemize}
-\item \underline{Device ID} - The Fuse's ID generated at the factory. It can have a value anywhere between 0 and 4095.
+\item \underline{Device ID} - The Appliance sensor's ID generated at the factory. It can have a value anywhere between 0 and 4095.
 \item \underline{Sample Count} - This variable is incremented each time a sample is taken, and allows the hub to work out the average voltage consumed by the connected appliance. The maximum value being 4095.
 \item \underline{Total} - This variable is the result of the summing of ADC values after a new sample is taken. It allows the hub to work out the average voltage consumed by the connected appliance. The maximum value for these 24 bits is 16,777,216.
 \item \underline{Checksum} - Before the packet is transmitted, each register is added to the checksum register, ignoring overflow. This variable will then be used Hub-side in conjunction with hamming code, to determine if the packet has been received correctly.
@@ -680,36 +799,45 @@ The PIC itself is far too big for the final product and there therefore should b
 The 16F1788 has an on board serial chip. This chip will be used to transmit the packet using the USART standard in serial communications.\\
 Depending on the clock rate, the serial communication will occur at different baud rates. This will be a factor for testing in the evaluation section.
 
+\subsubsection{Schematics}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=8cm]{/schematics/fuse}
+    \caption{The schematic for the Appliance sensor.}
+    \label{fig:fuseschematic}
+\end{figure}
+Figure~\ref{fig:fuseschematic} shows the schematic for the current implementation of the Appliance sensor.\\
+Currently the input for the Appliance sensor is a voltage divider using two 100K resistors across VREF+, which is then connected to RB3, the input for the ADC.\\
+There are two status LEDs. LED1 shows the on state of the Appliance sensor, when the Appliance sensor transmits LED2 will light up for the duration of transmission.\\
+The Appliance sensor transmits using pin RC7 to a faux Earth line connected to the hub. This line is protected using a 320 ohm resistor.\\
+As mentioned, the input for the Appliance sensor is currently a voltage divider. This is purely for testing, and to make it ready for appliances, the only change that would be required is the addition of a current sensor as the input to the ADC. The current sensor would then be connected to the appliance.
+
+\subsubsection{Architecture Diagram}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=8cm]{diagrams/fuse}
+    \caption {Appliance Sensor Architecture Diagram}
+\end{figure}
+
+\clearpage
 \subsection{Hub}
-The Hub consists of a Raspberry Pi connected to a custom circuit used to intercept messages from the fuse before they reach Earth. In this section, the additional circuitry is described as well as the software architecture of the Hub.
+The Hub consists of a Raspberry Pi connected to a custom circuit used to intercept messages from the Appliance sensor before they reach Earth. In this section, the additional circuitry is described as well as the software architecture of the Hub.
 \subsubsection{Requirements}
 \begin{itemize}
 \item \underline{Transmit Data} - The Hub should transmit received data to the server.
 \item \underline{Receive Data} - The Hub should be able to detect packets being transmitted on the Earthed line.
-\item \underline{Small} - The Fuse should be small.
-\item \underline{Low Cost} - The Fuse should be low cost.
-\item \underline{Low power} - The Fuse should be low power, and not consume large amounts of electricity.
+\item \underline{Small} - The Appliance sensor should be small.
+\item \underline{Low Cost} - The Appliance sensor should be low cost.
+\item \underline{Low power} - The Appliance sensor should be low power, and not consume large amounts of electricity.
 \item \underline{Process Data} - The Hub should be capable of processing data with ease.
 \end{itemize}
-\subsubsection{Architecture Diagram}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=8cm]{diagrams/hub}
-    \caption {Hub Architecture Diagram}
-\end{figure}
-\subsubsection{Schematics}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\columnwidth]{/schematics/hub}
-    \caption{The schematic for the Hub.}
-    \label{fig:hubschematic}
-\end{figure}
-The additional circuitry in figure~\ref{fig:hubschematic} is used to detect messages sent from the Fuse before they hit actual Earth.\\
-A precise OpAmp (MCP6401RT) is used to amplify the packets, the output of which is used in conjunction with a Hex Inverter to transpose the packets from inverted RS232 to non-inverted RS232 to be processed by the Pi.\\
-A 1 Ohm resister is used to provide a small difference between VIN+ and VIN- without distorting the signal. The OpAmp then uses a closed loop to determine the level of gain it should apply to the signal, which is calculated by dividing 1 megohm by 1 kilohm  resulting in a gain of 1,000.
+The applicable top level requirement are matched precisely through the use of the Raspberry Pi. As well has the top level requirements, the specific requirements listed above match directly onto the features offered by the Raspberry Pi.
+
 \subsubsection{Software}
 The software for the Hub is written in Python.\\
 Python is a really useful language, especially on the Raspberry Pi, where there are a lot of translations from lower level C to high level python.\\
+This section covers the different aspects of the software: a class diagram, the event driven architecture, and the reception of packets
 
 \paragraph{Class Diagram}
 \begin{figure}[H]
@@ -719,9 +847,9 @@ Python is a really useful language, especially on the Raspberry Pi, where there 
     \label{fig:hubclassdiagram}
 \end{figure}
 Figure~\ref{fig:hubclassdiagram} shows the final class diagram for the hub software.\\
-Each class is isntantiated using the smart\_fuse\_start.py file. When this file is executed, the smart\_fuse\_networker class is instantiated, and getOwner is called. This prompts the hub to talk to the server and obtain its credentials and also the user account it's linked to. If no user account is linked, the hub will check at regular 30 second intervals until a user account has been found.\\
-Once the hub has obtained all of the required details, the serial\_listener class is instantiated with the instance of networker previously instantiated. The listen function is called on the serial listener, which will listen forever. This is the main loop for the program.\\
-When the serial\_listener class successfully receives a full packet, it passes the packet and an instance of networker to the serial\_decoder and begins execution in a separate thread. If the serial\_decoder successfully decodes the packet, it is transmitted to the server using the sendFuseData function of the networker class passed in by the serial\_listener.
+Each class is instantiated using the \underline{smart\_monitoring\_start.py} file. When this file is executed, the \underline{smart\_monitoring\_networker} class is instantiated, and getOwner is called. This prompts the hub to talk to the server and obtain its credentials and also the user account it's linked to. If no user account is linked, the hub will check at regular 30 second intervals until a user account has been found.\\
+Once the hub has obtained all of the required details, the \underline{serial\_listener} class is instantiated with the instance of networker previously instantiated. The listen function is called on the serial listener, which will listen forever. This is the main loop for the program.\\
+When the \underline{serial\_listener} class successfully receives a full packet, it passes the packet and an instance of networker to the \underline{serial\_decoder} and begins execution in a separate thread. If the serial\_decoder successfully decodes the packet, it is transmitted to the server using the sendApplianceData function of the networker class passed in by the \underline{serial\_listener}.
 \paragraph{Event Driven Architecture}
 
 \begin{figure}[H]
@@ -736,8 +864,8 @@ The serial listener listens for the preamble which is 0x55. When It successfully
 If the listener receives all 14 bytes, it then starts up a Python Process to handle the decoding and transmission of the received data. Once the process has started, the listener immediately resumes listening for incoming data.\\ 
 The serial decoder operates in a separate thread (or Process) and as the name suggests, decodes the packet using Extended Hamming Code. If the packet is deemed correct, the data is sent to the server and the Process terminates. If the packet is uncorrectable, the packet is discarded and the Process terminates.
 
-\paragraph{Extended Hamming Code}
-As the Fuse is using Extended Hamming Code to communicate, the Hub must be able to decode the messages received.\\
+\paragraph{Packet Reception}
+As the Appliance sensor is using Extended Hamming Code to communicate, the Hub must be able to decode the messages received.\\
 Extended Hamming Code allows the receiver to determine the number of incorrect bits, and also the location of the incorrect bits. If the number of incorrect bits is one, then the receiver is able to correct this value, and proceed with processing the packet.\\
 Unfortunately if there is more than one error, the packet is unable to be corrected, and therefore must be discarded.\\
 On top of hamming code, there is a check sum. So even if the hamming code check succeeds, there is another layer of checking before the packet is determined to be valid.\\[5pt]
@@ -754,7 +882,7 @@ b7 & b6 & b5 & b4 & b3 & b2 & b1 & b0 & Hex\\ \hline
 \label{tab:incorrectpacket}
 \end{table}
 
-However the byte transmitted from the fuse was the following:
+However the byte transmitted from the Appliance sensor was the following:
 \begin{table}[H]
 \centering
 \begin{tabular}{| l | l | l | l | l | l | l | l | l |}
@@ -821,7 +949,29 @@ b7 & b6 & b5 & b4 & b3 & b2 & b1 & b0 & Hex\\ \hline
 \label{tab:correctedbyte}
 \end{table}
 
-\subsection{App}
+
+\subsubsection{Schematics}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\columnwidth]{/schematics/hub}
+    \caption{The schematic for the Hub.}
+    \label{fig:hubschematic}
+\end{figure}
+The additional circuitry in figure~\ref{fig:hubschematic} is used to detect messages sent from the Appliance sensor before they hit actual Earth.\\
+A precise OpAmp (MCP6401RT) is used to amplify the packets, the output of which is used in conjunction with a Hex Inverter to transpose the packets from inverted RS232 to non-inverted RS232 to be processed by the Pi.\\
+A 1 Ohm resister is used to provide a small difference between VIN+ and VIN- without distorting the signal. The OpAmp then uses a closed loop to determine the level of gain it should apply to the signal, which is calculated by dividing 1 megohm by 1 kilohm  resulting in a gain of 1,000.
+
+\subsubsection{Architecture Diagram}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=8cm]{diagrams/hub}
+    \caption {Hub Architecture Diagram}
+\end{figure}
+
+
+\clearpage
+\subsection{Cross Platform Application}
+The Cross Platform Application uses the Ionic framework as detailed in the Background section. This section describes the different aspects considered when creating the application, and provides a walk-through of the different views of the application
 \subsubsection{Requirements}
 \begin{itemize}
 \item \underline{Cross Platform} - The application should be Cross Platform to allow for rapid development.
@@ -832,6 +982,21 @@ b7 & b6 & b5 & b4 & b3 & b2 & b1 & b0 & Hex\\ \hline
 \item \underline{Consistent} - The application should have a consistent state over different platforms.
 \item \underline{Visualisation} - The application should provide a good visualisation of data held on the server.
 \end{itemize}
+The top level requirements applicable to the application are that it is real time, simple to install and use, and breaks down data per appliance.\\
+The implementation of this application matches these top level requirements, and also those listed above.
+
+\subsubsection{Use Case Diagram}
+\begin{figure}[H]
+    \includegraphics[width=\columnwidth]{diagrams/UseCase}
+    \caption {Use Case Diagram}
+    \label{fig:usecaseoverall}
+\end{figure}
+Figure~\ref{fig:usecaseoverall} shows the use case diagram for the system.\\
+A \textbf{User} can perform various actions, they can get, edit and delete data, and they can also login and register.\\
+An \textbf{Appliance sensor} can only report appliance data, and transmit it over the Earth line.\\
+A \textbf{Hub} can receive data from an \textbf{Appliance sensor}, report data and also register with the \textbf{Server}.\\
+The \textbf{Server} can store and serve the data stored in the database.
+
 \subsubsection{Architecture Diagram}
 \begin{figure}[H]
     \centering
@@ -839,35 +1004,39 @@ b7 & b6 & b5 & b4 & b3 & b2 & b1 & b0 & Hex\\ \hline
     \caption {Application Architecture Diagram}
 \end{figure}
 
-\subsubsection{MVC}
-Angular lends itself to the MVC~\cite{mvc} architecture. This means that the different elements of an application are divided into 3 distinct sections. The Model translates to application data, the view is what the user sees and the controller is what the user interacts with.\\
-
-A visualisation of this can be seen below in Figure 15:
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=8cm]{/diagrams/mvc}
-    \caption {The model view controller architecture.~\cite{mvcimage}}
-\end{figure}
-
-\paragraph{Folder Structure}
-The main benefit of MVC is a tidy folder structure with a high level of compartmentalisation for the code base as seen in Figure 16:
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=8cm]{/misc/folders}
-    \caption {The folder structure for the application.}
-\end{figure}
-The views are contained in templates, the controllers are in the controllers folder and the models are contained within the factories folder.\\
-
 \subsubsection{Storage}
 There is a caching model in place for the application. When a controller is loaded, it asks the model to retrieve local data for the current day. If the model has data for the current data, the view will be updated. Otherwise, the model will fetch fresh data from the api.\\
-Every single view implements a way of refreshing the data stored on the device. In the application a user can do this by pulling down on the view, triggering a controller event which forces the application to ask for fresh data from the server. The cached data is also updated when the data is returned from the API.
+Every single view implements a way of refreshing the data stored on the device. In the application a user can do this by pulling down on the view, triggering a controller event which forces the application to ask for fresh data from the server. The cached data is also updated when the data is returned from the API.\\
+An example of this functionality can be seen in Figure~\ref{fig:mvcrefresh}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\columnwidth]{/diagrams/mvcrefresh}
     \caption {A diagram of the refresh event}
+    \label{fig:mvcrefresh}
 \end{figure}
+
+
+\subsubsection{MVC}
+Angular lends itself to the MVC~\cite{mvc} architecture. This means that the different elements of an application are divided into 3 distinct sections. The Model translates to application data, the view is what the user sees and the controller is what the user interacts with.\\
+A visualisation of this can be seen below in Figure~\ref{fig:mvcdiag}:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=8cm]{/diagrams/mvc}
+    \caption {The model view controller architecture.~\cite{mvcimage}}
+    \label{fig:mvcdiag}
+\end{figure}
+
+\paragraph{Folder Structure}
+A benefit of MVC is a tidy folder structure with a high level of compartmentalisation for the code base as seen in Figure~\ref{fig:folderstruct}:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=8cm]{/misc/folders}
+    \caption {The folder structure for the application.}
+    \label{fig:folderstruct}
+\end{figure}
+The views are contained in templates, the controllers are in the controllers folder and the models are contained within the factories folder.\\
 
 \subsubsection{User Interface}
 In this section, each view will be described. The thought behind each views' design and the UI features will also be discussed
@@ -893,7 +1062,7 @@ In this section, each view will be described. The thought behind each views' des
     \label{fig:iconsplashlogin}
 \end{figure}
 In figure~\ref{fig:iconsplashlogin}.a, the application icon is shown in situ on an iOS device. The icon is on the second to last row, second in from the left.\\
-The icon uses the university colour scheme which persists throughout the entire application. The icon is also reused as a menu option in the hamburger menu.\\
+The icon uses the university colour scheme which persists throughout the entire application. The icon is also reused as a menu option in the application menu.\\
 Figure~\ref{fig:iconsplashlogin}.b shows the splash view which is presented every time the application is freshly opened, giving time for resources to be loaded in the background.\\
 The final figure~\ref{fig:iconsplashlogin}.c shows the view that is presented when the user has no local session stored on the device. If a user has logged into the application at a previous point, their user profile is stored locally and this view is skipped, allowing the seamless resuming of a previous session.\\
 If the login button is clicked, a login form is presented, similarly, if the register option is pressed a registration form is presented to the user.
@@ -909,52 +1078,52 @@ If the login button is clicked, a login form is presented, similarly, if the reg
     \begin{subfigure}[t]{0.32\columnwidth}
         \centering
         \frame{\includegraphics[width=\columnwidth]{/screenshots/hamburger}}
-        \caption{The application "hamburger" menu view.}
+        \caption{The application menu view.}
     \end{subfigure}
     \caption{The home and menu views.}
     \label{fig:homemenu}
 \end{figure}
-In figure~\ref{fig:homemenu}.a, the home page is shown. The home page surmises core data from the server and displays statistics for the four most used fuses. At the time of this screenshot, data for only one fuse was available.\\
+In figure~\ref{fig:homemenu}.a, the home page is shown. The home page surmises core data from the server and displays statistics for the four most used Appliance sensors. At the time of this screen shot, data for three separate appliances across 3 different hubs was available.\\
 A key point to mention is the use of the drop down menu in the upper right hand corner of the screen to change the date, and ultimately the data. This is a common way of changing data sets used at many points in the application.\\
-Figure~\ref{fig:homemenu}.b shows the hamburger menu, named because of the icon used to access it - three lines that are stacked. This menu is common place in many popular applications on both Android and iOS platforms, adhering to the heuristic of consistency and standards~\cite{nielsen}.\\
+Figure~\ref{fig:homemenu}.b shows the application main menu, accessed via the three lines at the top left of every view (asside from login). This menu is common place in many popular applications on both Android and iOS platforms, adhering to the heuristic of consistency and standards~\cite{nielsen}.\\
 The menu is the main method of navigating the main features of the application. To make navigation easier, icons have been used based on the rule of recognition rather than recall proposed by Neilsen~\cite{nielsen}.\\
-The "My Fuses" option has the same icon as that used in the application icon and splash screen in~\ref{fig:iconsplashlogin}.a and~\ref{fig:iconsplashlogin}.b.\\ 
-The "My Hubs" icon is symbolic of that of a centralised system where all of the fuses report to a single point.\\ 
+The "My Appliances" option has the same icon as that used in the application icon and splash screen in~\ref{fig:iconsplashlogin}.a and~\ref{fig:iconsplashlogin}.b.\\ 
+The "My Hubs" icon is symbolic of that of a centralised system where all of the Appliance sensors report to a single point.\\ 
 The remainder of the icons used are common place in the industry, and matches the users' understanding between the system and the real world~\cite{nielsen}.
 
 
-\paragraph{Fuse views}
+\paragraph{Appliance views}
 \begin{figure}[H]
     \centering
     \begin{subfigure}[t]{0.32\columnwidth}
         \centering
         \frame{\includegraphics[width=\columnwidth]{/screenshots/fuses}}
-        \caption{The list fuses view.}
+        \caption{The list appliances view.}
     \end{subfigure}
     \begin{subfigure}[t]{0.32\columnwidth}
         \centering
         \frame{\includegraphics[width=\columnwidth]{/screenshots/editfuse}}
-        \caption{The edit fuse view.}
+        \caption{The edit appliance view.}
     \end{subfigure}
     \begin{subfigure}[t]{0.32\columnwidth}
         \centering
         \frame{\includegraphics[width=\columnwidth]{/screenshots/deletefuse}}
-        \caption{Removing a fuse.}
+        \caption{Removing an appliance.}
     \end{subfigure}
-    \caption{The fuse views.}
+    \caption{The appliance views.}
     \label{fig:fuseviews}
 \end{figure}
-The listing of the fuses in figure~\ref{fig:fuseviews}.a allows the user to perform a number of actions:
+The listing of the appliances in figure~\ref{fig:fuseviews}.a allows the user to perform a number of actions:
 \begin{itemize}
-\item A tap on the individual fuse will display the live fuse view seen in figure~\ref{fig:deletelive}.b
+\item A tap on the individual appliance will display the live appliance view seen in figure~\ref{fig:deletelive}.b
 \item A tap on the pen will launch the edit view seen in figure~\ref{fig:fuseviews}.b
 \item A swipe on the list item will reveal the delete option seen in figure~\ref{fig:fuseviews}.c
 \end{itemize}
 All of the above actions are familiar throughout applications on both iOS and Android. The tap to view an item behaviour is seen on every single application that implements a list view, the tap the pen to edit motif is also present in many applications, and finally the swipe to delete behaviour is seen in the messages application on both platforms.\\
 As mentioned in the section discussing the home view, there is the recurring drop down list in the upper right hand corner adhering to the heuristic of consistency and standards~\cite{nielsen}. In this view, it allows a user to switch between various hubs that may be linked to the user account.\\
-Figure~\ref{fig:fuseviews}.b allows a user to change the name, the description and upload an image for the selected fuse. By default the fuse name is set to "Fuse \{Fuse ID\}", and the description is set to "Change the fuse description to something more meaningful", with the default image set to a question mark to indicate to the user they should change the data.\\
-The idea behind having a picture for a Fuse was to allow a user to quickly identify specific appliances connected to the fuse. For instance, if a Fuse was connected to a monitor, the user would take a picture of the aforementioned monitor. The picture, combined with the name and description fields would speed up fuse identification ten fold.\\
-Figure~\ref{fig:fuseviews}.c shows the method of deleting a fuse, swipe to the left to reveal the delete action. When the delete button is pressed, a confirmation box appears to ensure that the user wants to carry out the delete action, this can be seen in figure~\ref{fig:deletelive}.a. This feature is used to prevent user errors in accordance with Nielsens Heuristics~\cite{nielsen}.
+Figure~\ref{fig:fuseviews}.b allows a user to change the name, the description and upload an image for the selected appliance. By default the appliance name is set to "Appliance \{ID\}", and the description is set to "Change the appliance description to something more meaningful", with the default image set to a question mark to indicate to the user they should change the data.\\
+The idea behind having a picture for an Appliance was to allow a user to quickly identify specific appliances connected to the Appliance sensor. For instance, if an Appliance sensor was connected to a monitor, the user would take a picture of the aforementioned monitor. The picture, combined with the name and description fields would speed up appliance identification ten fold.\\
+Figure~\ref{fig:fuseviews}.c shows the method of deleting an appliance, swipe to the left to reveal the delete action. When the delete button is pressed, a confirmation box appears to ensure that the user wants to carry out the delete action, this can be seen in figure~\ref{fig:deletelive}.a. This feature is used to prevent user errors in accordance with Nielsens Heuristics~\cite{nielsen}.
 
 \begin{figure}[H]
     \centering
@@ -966,13 +1135,13 @@ Figure~\ref{fig:fuseviews}.c shows the method of deleting a fuse, swipe to the l
     \begin{subfigure}[t]{0.32\columnwidth}
         \centering
         \frame{\includegraphics[width=\columnwidth]{/screenshots/live}}
-        \caption{The live view and the summary of the past seven days for the selected fuse.}
+        \caption{The live view and the summary of the past seven days for the selected appliance.}
     \end{subfigure}
-    \caption{The 'Are you sure you want to delete view' and the live view of the data being reported by the selected fuse.}
+    \caption{The `Are you sure you want to delete view' and the live view of the data being reported by the selected Appliance sensor.}
     \label{fig:deletelive}
 \end{figure}
-Figure~\ref{fig:deletelive}.b shows the live data view and the seven day summary for the fuse titled 'Asd'. As a hub reports data for the selected fuse, the application will be notified, and the data will appear in the live view.\\
-The seven day summary displays the average voltage over the past seven days for the selected fuse.
+Figure~\ref{fig:deletelive}.b shows the live data view and the seven day summary for the Appliance sensor titled `Appliance 10'. As a hub reports data for the selected Appliance sensor, the application will be notified, and the data will appear in the live view.\\
+The seven day summary displays the power utilisation over the past seven days for the selected Appliance sensor.
 
 \paragraph{Statistics views}
 \begin{figure}[H]
@@ -995,11 +1164,11 @@ The seven day summary displays the average voltage over the past seven days for 
     \caption {The statistics views.}
     \label{fig:statisticsviews}
 \end{figure}
-The statistics views are a really cool feature of the application. It allows a user to gain various insights into the current and historic carbon, power and price data. In the all three views date selection is available so that the user can look at information for previous days.\\
+The statistics views allow a user to gain various insights into the current and historic carbon, power and price data. In the all three views date selection is available so that the user can look at information for previous days.\\
 The aim behind this collection of views is to allow the user to evaluate the times at which they turn their big appliances on and off.\\
 For the environmentally conscious, the carbon view (~\ref{fig:statisticsviews}.a) allows the user to see the live estimated level of carbon in the UK.\\ 
 Throughout various points of the day, the level of carbon fluctuates.\\ 
-If there is a high level of carbon, a red unhappy face is displayed, conveying to the user that the level of carbon is quite and the use of big appliances will make a large impact to the level of carbon. \\
+If there is a high level of carbon, a red unhappy face is displayed, conveying to the user that the level of carbon is quite high and the use of big appliances will make a large impact to the level of carbon. \\
 If there is a medium level of carbon, an orange indifferent face is displayed, indicating that the level of carbon is moderate so the use of big appliances will make a small impact to the overall level of carbon.\\
 If there is a low level of carbon, a green happy face is displayed as seen in figure~\ref{fig:statisticsviews}.a, this advises the user that the use of big appliances will make no significant difference to the overall carbon level.\\
 The hope behind the availability of this statistic is to level out the carbon emissions throughout the day and change user behaviour so that the use of appliances is convenient to the planet, but not neccessarily to the user.\\
@@ -1009,7 +1178,7 @@ The final statistic shown in figure~\ref{fig:statisticsviews}.c is the price dat
 From the graph, really interesting insights can be gleaned. Over time there are various points where there is a spike in energy prices, this is due to the load increasing on the UK's electricity grid. Common spikes are around 10/11 am and 6/7pm where activities like boiling kettles and cooking take place.\\
 There is a lot of research currently being placed into this field in an effort to reduce these spikes, thereby reducing price, and the load on the energy grid. A lot of energy is also wasted during these spikes, as the grid uses a demand and response system to predict energy usage, increasing or decreasing energy generation accordingly, if not all of the energy is utilised, it will be burnt off as heat.\\
 In 2010, a study of demand and response approaches to European energy generation occurred~\cite{demandresponse}. The paper concludes that outdated metering technologies mean that the average home owner  is not aware of the real time energy prices, and are not billed accordingly. Through the use of the data gathered by the project, it could allow companies to more accurately bill the home owner, as well as providing valuable insights into energy consumption.\\
-If a home owner was also aware of the impact that their appliances have on the grid, this may prompt a change in user behaviour, or encourage people to buy less energy intensive appliances. For example, a slow boiling kettle would do wonders for the grid, as the intensity of the energy consumed would be slower, the only cost being time.
+If a home owner was also aware of the impact that their appliances have on the grid, this may prompt a change in user behaviour, or encourage people to buy less energy intensive appliances. For example, a slow boiling kettle would do wonders for the grid, as the intensity of the energy consumed would be slower, the only cost being time consumed waiting for the kettle to boil.
 
 
 \paragraph{Profile and logout}
@@ -1030,12 +1199,12 @@ If a home owner was also aware of the impact that their appliances have on the g
 \end{figure}
 The final two views of the application are the profile and logout views.
 In figure~\ref{fig:profilelogout}.a the profile view can be seen. This allows a user to change their profile information stored on the server. They can change their name, their email address, their country and house size. The reason a users' country and house size are stored is because it acts as another metric for the energy suppliers to analyse.\\
-The logout view in figure~\ref{fig:profilelogout}.b is accessible through the hamburger menu. The user will be asked if they would like to like out in order to prevent user error.\\
+The logout view in figure~\ref{fig:profilelogout}.b is accessible through the main menu. The user will be asked if they would like to like out in order to prevent user error.\\
 If a user clicks ok, all of the user information will be removed from local storage, the user will then be redirected to the login screen. If the user cancels the action, nothing happens. 
 
-
+\clearpage
 \subsection{Server}
-The Server consists of a number of core elements: the Database, the Web Site and the API.\\
+The Server consists of three core elements: the Database, the Web Site and the API.\\
 This section will breakdown these core elements and describe how the implementation of each came about, and the design of each.
 \subsubsection{Requirements}
 \begin{itemize}
@@ -1044,12 +1213,7 @@ This section will breakdown these core elements and describe how the implementat
 \item \underline{Development Time} - The speed of development for the chosen solution should be rapid to meet the tight time constraints of the project.
 \item \underline{RESTful} - The application should be RESTful, using traditional HTTP methods and status codes to provide feedback to the application.
 \end{itemize}
-\subsubsection{Architecture Diagram}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=8cm]{diagrams/server}
-    \caption {Server Architecture Diagram}
-\end{figure}
+The additional requirements mentioned above are specific to the server. All of these requirements have been matched in the implementation as you will read.
 
 \subsubsection{Database}
 \begin{figure}[H]
@@ -1059,20 +1223,19 @@ This section will breakdown these core elements and describe how the implementat
 \end{figure}
 
 The collection (database) contains four documents (tables) core to the operation of the platform.\\
-The User document stores all details for the users registered with the platform, the Hub document stores all of the information that represents a Hub object and the Fuse document stores all of the details pertaining to a Fuse including the data transmitted from the Hubs.\\
+The User document stores all details for the users registered with the platform, the Hub document stores all of the information that represents a Hub object and the Appliance document stores all of the details pertaining to an Appliance sensor including the data transmitted from the Hubs.\\
 The mappings between the documents are as follows:
 \begin{itemize}
 \item A User has a unique identifier.
 \item A Hub has a unique identifier and also has an ownerid that maps onto the User document through the use of the UserID.
-\item A Fuse has a unique identifier. A Fuse also contains an ownerID and a hubID which maps onto both the User document and the Hub document.
+\item An Appliance has a unique identifier. An Appliance also contains an ownerID and a hubID which maps onto both the User document and the Hub document.
 \end{itemize}
-The documents were constructed in this manner because of a limitation with the implementation of the Fuse:\\
-A Fuse can have an ID between 0 and 4095 ($2^{12}$). If a user had multiple installs in different locations, thereby requiring the use of more than one hub, without the Hub ID there could be duplicate Fuse IDs. A User also wouldn't want to see all of the Fuses for every single location.\\ 
-Using the Hub document allows for the easy segmentation between locations and removes the possible collision of Fuse IDs.\\
+The documents were constructed in this manner because an Appliance sensor can have an ID between 0 and 4095 ($2^{12}$). If a user had multiple installs in different locations, thereby requiring the use of more than one hub, without the Hub ID there would be duplicate Appliance IDs. A User also wouldn't want to see all of the Appliance sensors for every single location.\\ 
+Using the HubID allows for the easy segmentation between locations and removes the possible collision of Appliance sensor IDs.\\
 
 The relationships between the documents are thusly:
 \begin{center}
-    \textit{"A User can have many Hubs and a Hub can have many Fuses"}
+    \textit{"A User can have many Hubs and a Hub can have many Appliances"}
 \end{center}
 The Energy Statistics document is used to store data scraped from various APIs, which will be explained further on in this document.\\
 Energy Statistics has a primary key of date, and bears no relation to any other documents. 
@@ -1102,22 +1265,21 @@ Once a user logs in, the API documentation is then made available to them. A Use
 
 \paragraph{Socket.io}
 Socket.io~\cite{socketio} is a javascript library compatible with both angular and node js. It allows bidirectional event-based communication between client and server.\\
-Socket.io is used to update clients with real time data when a data point is added to a fuse by a hub, and the application is running.\\
-Every time a user opens the app, they join a channel based on their user ID. When a data point is received, a look up is performed using the user ID provided in the /api/fuse POST request. The event is then broadcast down the channel if it exists, and is then digested by the client.
+Socket.io is used to update clients with real time data when a data point is added to an Appliance by a hub, and the application is running.\\
+Every time a user opens the app, they join a socket indexed by their user ID. This allows real time information to be push to clients even when the same user is logged in on different platforms. When a data point is received, a look up is performed using the user ID provided in the /api/appliance POST request. The event is then broadcast down the socket if it exists, and is then digested by the client.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\columnwidth]{/diagrams/socketio}
-
     \caption {The sequence diagram of live data reporting using Socket.io}
 \end{figure}
 
-Socket.io uses the well known method of long polling to keep connections open. It also enables the detection of disconnected clients through the use of a pulse every x seconds.
+Socket.io uses the well known method of sockets and falls back to long polling to keep connections open if the use of sockets aren't permitted by the configuration. It also enables the detection of disconnected clients through the use of a keep-alive pulse every x seconds.
 
 \paragraph{Data Scraping}
 
 In order to produce the statistics seen in the application, the server is required to fetch data from a number of publicly available APIs.\\
-If the current minute is: 0, 15, 30 or  45, the server harvests data from the following URLs:
+If the current minute is: 0, 15, 30 or  45, the server harvests data from the following URLs as discussed in the Existing APIs section:
 \begin{itemize}
 \item \url{http://www.earth.org.uk/_gridCarbonIntensityGB.xml}
 
@@ -1129,12 +1291,12 @@ If the current minute is: 0, 15, 30 or  45, the server harvests data from the fo
 \end{itemize}
 All of the APIs return data in XML format. The server transposes them into easy to digest JSON objects, and stores them in the database to be retrieved by clients at a later date.\\
 
-\paragraph{Adding Fuse Data Points}
-When a Hub reports a data point for a fuse, the server optimises the packet to decrease the number of data points stored server side. The main reason for implementing the system in this manner entirely rests on time constraints for the project. There wasn't enough time to get the rigorous infrastructure in place to support such large amounts of data, whilst maintaining a fast API.\\
+\paragraph{Adding Appliance Data Points}
+When a Hub reports a data point for an Appliance, the server optimises the packet to decrease the number of data points stored server side. The main reason for implementing the system in this manner entirely rests on the fact that keeping every single data point would result in an unnecessarily over precise and bloated system.\\
 This optimisation is a summed average of the data points over a configurable period of time and is as follows:
 
 \begin{equation*} 
-\text{average voltage } = \cfrac{\text{sum of the reported voltages}}{\text{number of samples}}
+\text{power utilisation } = \cfrac{\text{sum of the reported voltages}}{\text{number of samples}}
 \end{equation*}
 
 The configurable period variable dictates the number of available samples for a given day. To calculate this value, the following will need to be evaluated:
@@ -1143,18 +1305,26 @@ The configurable period variable dictates the number of available samples for a 
 \text{available samples } = \cfrac{\text{seconds in a day}}{\text{configurable period in seconds}}
 \end{equation*}
 
-In a full day there would be a total of 10800 samples for each Fuse if each Fuse transmitted data every 8 seconds.\\
+In a full day there would be a total of 10800 samples for each appliance if each appliance sensor transmitted data every 8 seconds.\\
 Using the configurable period variable, the number of samples can be reduced significantly.\\
-Currently, the configurable period is set to 10 minutes. Evaluating the previous calculation will result in the number of available samples to be determined.:
+Currently, the configurable period is set to 10 minutes. Evaluating the previous calculation will result in the number of available samples to be determined:
 
 \begin{equation*} 
  \cfrac{86400}{\text{600}} = 144 \text{ samples}
 \end{equation*}
 
-Each sample would then contain the average of 75 data points reported by the Hub if the Fuses were reporting once in an 8 second interval.\\
-The downside to this approach is that the platform will not immediately react to sharp changes in voltages reported by the Fuses. \\
+Each sample would then contain the average of 75 data points reported by the Hub if the Appliance sensors were reporting once in an 8 second interval.\\
+The downside to this approach is that the platform will not immediately react to sharp changes in voltages reported by the Appliance sensors. \\
 An interesting point to mention, is that when a new data point is reported by a hub, the real time energy price is fetched and used to calculate the costing of that data point. This feature enables the Users to see accurately the price of the energy they are consuming. 
 % BENEFITS ENERGY COMPANIES?
+
+\subsubsection{Architecture Diagram}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=8cm]{diagrams/server}
+    \caption {Server Architecture Diagram}
+\end{figure}
+
 
 \subsubsection{RESTful API}
 
@@ -1184,7 +1354,7 @@ Each request type above is used as specified by w3.org~\cite{w3}. The four reque
 
 The usage of the above status codes is in compliance with those specified by w3.org~\cite{w3}. They are used to provide primitive error detection capabilities to the client.\\
 To ensure that all requests are valid, parameters are checked before carrying out every request, if one or more parameters are missing, the HTTP status code 400 Bad Request is returned.\\
-Some requests like /api/fuses GET will return an empty array if there are no fuses available for a user instead of displaying an error code. This is intentional because the request has been successfully carried out, the result being that the user doesn't have any fuses.\\
+Some requests like /api/appliances GET will return an empty array if there are no appliances available for a user instead of displaying an error code. This is intentional because the request has been successfully carried out, the result being that the user doesn't have any appliances.\\
 Mostly when a transaction has been carried out successfully, the status code returned will be 200 Ok. There is an exception to this rule, like when performing a POST request. If the POST request is valid, a 201 Created status code will be returned indicating that the object has been created and is ready to use.\\
 500 Internal Server Error is only returned when something unexpected has happened, and the server cannot fulfill the request.\\
 Every time an API is called, the server provides additional feedback on the operation that just occurred on top of the HTTP status codes.\\
@@ -1235,7 +1405,7 @@ Any data prior to this request will be purged from the database.\\
 \begin{itemize}
 \item userID: A string containing the id of the user. This is used to ensure that owners can't remove each others' hubs.
 
-\item hubID: A string containing the if of the hub the user is trying to remove.
+\item hubID: A string containing the id of the hub the user is trying to remove.
 \end{itemize}
 
 \underline{Expected Response:}\\[5pt]
@@ -1254,7 +1424,7 @@ Any data prior to this request will be purged from the database.\\
 \subparagraph*{/api/hub}
 \underline{Type:} \textbf{GET}\\
 
-\underline{Description:} Retrieves a hub object using the mac address of the hub. This API is used by the hub to effectively register and obtain its credentials suchas the ownerID, and its hubID.\\
+\underline{Description:} Retrieves a hub object using the mac address of the hub. This API is used by the hub to effectively register and obtain its credentials such as the ownerID, and its hubID.\\
 This API call creates a hub object if this hub is new, otherwise it will retrieve the object from the database\\
 
 \underline{Parameters:}
@@ -1353,7 +1523,7 @@ The name is used in the front end to allow the user to identify specific hubs ra
 
 \underline{Type:} \textbf{POST}\\
 
-\underline{Description:} Registers a user with the Smart Fuse Project.\\
+\underline{Description:} Registers a user with the Smart Monitoring Project.\\
 
 \underline{Parameters:}
 \begin{itemize}
@@ -1418,7 +1588,7 @@ The name is used in the front end to allow the user to identify specific hubs ra
 \underline{Expected Response:}\\[5pt]
 \forceindent Status Code: \textbf{200} \\
 \begin{minted}[frame=single,framesep=3mm,linenos=true,xleftmargin=21pt,tabsize=4]{js}
-{success:"User removed!"}"
+{success:"User removed!"}
 \end{minted}
 \underline{Error Response:}\\[5pt]
 \forceindent Status Code: \textbf{500} \\
@@ -1428,11 +1598,11 @@ The name is used in the front end to allow the user to identify specific hubs ra
 
 
 
-\paragraph{Fuse API's}
-\subparagraph*{/api/fuses}
+\paragraph{Appliance API's}
+\subparagraph*{/api/appliances}
 \underline{Type:} \textbf{GET}\\
 
-\underline{Description:} Gets the fuses based on a supplied userID.\\
+\underline{Description:} Gets the appliances based on a supplied userID.\\
 
 \underline{Parameters:}
 \begin{itemize}
@@ -1441,18 +1611,18 @@ The name is used in the front end to allow the user to identify specific hubs ra
 \underline{Expected Response:}\\[5pt]
 \forceindent Status Code: \textbf{200} \\
 \begin{minted}[frame=single,framesep=3mm,linenos=true,xleftmargin=21pt,tabsize=4]{js}
-{success: "Fuses retrieved",fuses: [FUSE OBJECTS]}
+{success: "appliances retrieved",appliances: [appliance OBJECTS]}
 \end{minted}
 \underline{Error Response:}\\[5pt]
 \forceindent Status Code: \textbf{200} \\
 \begin{minted}[frame=single,framesep=3mm,linenos=true,xleftmargin=21pt,tabsize=4]{js}
-{success: "Fuses retrieved",fuses: []}
+{success: "appliances retrieved",appliances: []}
 \end{minted}
 
-\subparagraph*{/api/fuses/summary}
+\subparagraph*{/api/appliances/summary}
 \underline{Type:} \textbf{GET}\\
 
-\underline{Description:} Gets the users' top four fuse summaries for the given date.\\
+\underline{Description:} Gets the users' top four appliance summaries for the given date.\\
 
 \underline{Parameters:}
 \begin{itemize}
@@ -1464,26 +1634,26 @@ The name is used in the front end to allow the user to identify specific hubs ra
 \underline{Expected Response:}\\[5pt]
 \forceindent Status Code: \textbf{200} \\
 \begin{minted}[frame=single,framesep=3mm,linenos=true,xleftmargin=21pt,tabsize=4]{js}
-{success: "Fuse summary retrieved",summary: {summary object}}
+{success: "appliance summary retrieved",summary: {summary object}}
 \end{minted}
 \underline{Error Response:}\\[5pt]
 \forceindent Status Code: \textbf{200} \\
 \begin{minted}[frame=single,framesep=3mm,linenos=true,xleftmargin=21pt,tabsize=4]{js}
-{success: "Fuse summary retrieved",summary: {}}
+{success: "appliance summary retrieved",summary: {}}
 \end{minted}
 
-\subparagraph*{/api/fuse/upload}
+\subparagraph*{/api/appliance/upload}
 \underline{Type:} \textbf{POST}\\
 
-\underline{Description:} Uploads an image in base 64 format to the server. This feature is used to help users identify the fuse that is connected to each appliance.\\
+\underline{Description:} Uploads an image in base 64 format to the server. This feature is used to help users identify the appliance that is connected to each appliance.\\
 
 \underline{Parameters:}
 \begin{itemize}
 \item userID: A string containing the id of the user - retrieved from "/api/user/login"
 
-\item fuseID: The ID of the fuse to upload an icon for.
+\item applianceID: The ID of the appliance to upload an icon for.
 
-\item hubID: The ID of the hub which the fuse is reporting from.
+\item hubID: The ID of the hub which the appliance is reporting from.
 
 \item image: The base 64 string of the image.
 \end{itemize}
@@ -1499,138 +1669,138 @@ The name is used in the front end to allow the user to identify specific hubs ra
 {error: "Image upload failed"}
 \end{minted}
 
-\subparagraph*{/api/fuse}
+\subparagraph*{/api/appliance}
 \underline{Type:} \textbf{GET}\\
 
-\underline{Description:} Gets a singular fuse based on a user ID and a fuse ID\\
+\underline{Description:} Gets a singular appliance based on a user ID and an appliance ID\\
 
 \underline{Parameters:}
 \begin{itemize}
 \item userID: A string containing the id of the user - retrieved from "/api/user/login"
 
-\item fuseID: The ID of the fuse to fetch.
+\item applianceID: The ID of the appliance to fetch.
 
-\item hubID: The ID of the hub which the fuse is reporting from.
+\item hubID: The ID of the hub which the appliance is reporting from.
 
 \end{itemize}
 
 \underline{Expected Response:}\\[5pt]
 \forceindent Status Code: \textbf{200} \\
 \begin{minted}[frame=single,framesep=3mm,linenos=true,xleftmargin=21pt,tabsize=4]{js}
-{success: "Fuse retrieved",fuse: [FUSE OBJECT]}
+{success: "appliance retrieved",appliance: [appliance OBJECT]}
 \end{minted}
 \underline{Error Response:}\\[5pt]
 \forceindent Status Code: \textbf{404} \\
 \begin{minted}[frame=single,framesep=3mm,linenos=true,xleftmargin=21pt,tabsize=4]{js}
-{error: "Fuse not found"}
+{error: "appliance not found"}
 \end{minted}
 
-\subparagraph*{/api/fuse/}
+\subparagraph*{/api/appliance/}
 \underline{Type:} \textbf{POST}\\
 
-\underline{Description:} If the fuse exists it adds an item to the data array - otherwise it creates a fuse object. This API call also notifies any users that are subscribed to the fuse and have the app open.\\
+\underline{Description:} If the appliance exists it adds an item to the data array - otherwise it creates an appliance object. This API call also notifies any users that are subscribed to the appliance and have the app open.\\
 This API is called by the hub.\\
 
 \underline{Parameters:}
 \begin{itemize}
 \item userID: A string containing the id of the user - retrieved from "/api/user/login"
 
-\item fuseID: The ID of the fuse to add.
+\item applianceID: The ID of the appliance to add.
 
-\item fuseVal: The data to be added
+\item applianceVal: The data to be added
 
-\item hubID: The ID of the hub which the fuse is reporting from.
+\item hubID: The ID of the hub which the appliance is reporting from.
 
 \end{itemize}
 
 \underline{Expected Response:}\\[5pt]
 \forceindent Status Code: \textbf{201} \\
 \begin{minted}[frame=single,framesep=3mm,linenos=true,xleftmargin=21pt,tabsize=4]{js}
-{success: "Fuse data added"}
+{success: "appliance data added"}
 \end{minted}
 \underline{Error Response:}\\[5pt]
 \forceindent Status Code: \textbf{404} \\
 \begin{minted}[frame=single,framesep=3mm,linenos=true,xleftmargin=21pt,tabsize=4]{js}
-{error: "Fuse not found"}
+{error: "appliance not found"}
 \end{minted}
 
-\subparagraph*{/api/fuse/}
+\subparagraph*{/api/appliance/}
 \underline{Type:} \textbf{PUT}\\
 
-\underline{Description:} Updates the details of the fuse stored in the database.\\
+\underline{Description:} Updates the details of the appliance stored in the database.\\
 
 \underline{Parameters:}
 \begin{itemize}
 \item userID: A string containing the id of the user - retrieved from "/api/user/login".
 
-\item fuseID: The ID of the fuse to upload an icon for.
+\item applianceID: The ID of the appliance to upload an icon for.
 
-\item hubID: The ID of the hub which the fuse is reporting from.
+\item hubID: The ID of the hub which the appliance is reporting from.
 
-\item fuseName: The new name of the fuse.
+\item applianceName: The new name of the appliance.
 
-\item fuseDescription: The new description of the fuse.
+\item applianceDescription: The new description of the appliance.
 \end{itemize}
 
 \underline{Expected Response:}\\[5pt]
 \forceindent Status Code: \textbf{200} \\
 \begin{minted}[frame=single,framesep=3mm,linenos=true,xleftmargin=21pt,tabsize=4]{js}
-{success: "Fuse edited"}
+{success: "appliance edited"}
 \end{minted}
 \underline{Error Response:}\\[5pt]
 \forceindent Status Code: \textbf{403} \\
 \begin{minted}[frame=single,framesep=3mm,linenos=true,xleftmargin=21pt,tabsize=4]{js}
-{error: "Fuse couldn't be edited"}
+{error: "appliance couldn't be edited"}
 \end{minted}
 
-\subparagraph*{/api/fuse}
+\subparagraph*{/api/appliance}
 \underline{Type:} \textbf{DELETE}\\
 
-\underline{Description:} Removes a fuse from the Smart Fuse Project\\
+\underline{Description:} Removes an appliance from the Smart Monitoring Project\\
 
 \underline{Parameters:}
 \begin{itemize}
 \item userID: A string containing the id of the user - retrieved from "/api/user/login"
 
-\item fuseID: The ID of the fuse to remove.
+\item applianceID: The ID of the appliance to remove.
 
-\item hubID: The ID of the hub which the fuse is reporting from.
+\item hubID: The ID of the hub which the appliance is reporting from.
 
 \end{itemize}
 \underline{Expected Response:}\\[5pt]
 \forceindent Status Code: \textbf{200} \\
 \begin{minted}[frame=single,framesep=3mm,linenos=true,xleftmargin=21pt,tabsize=4]{js}
-{success: "Fuse removed"}
+{success: "appliance removed"}
 \end{minted}
 \underline{Error Response:}\\[5pt]
 \forceindent Status Code: \textbf{403} \\
 \begin{minted}[frame=single,framesep=3mm,linenos=true,xleftmargin=21pt,tabsize=4]{js}
-{error: "Fuse couldn't be removed"}
+{error: "appliance couldn't be removed"}
 \end{minted}
 
-\subparagraph*{/api/fuse/summary}
+\subparagraph*{/api/appliance/summary}
 \underline{Type:} \textbf{GET}\\
 
-\underline{Description:} Fetches the summary for the past seven days for the given fuse.\\
+\underline{Description:} Fetches the summary for the past seven days for the given appliance.\\
 
 \underline{Parameters:}
 \begin{itemize}
 \item userID: A string containing the id of the user - retrieved from "/api/user/login"
 
-\item fuseID: The ID of the fuse to fetch the summary for.
+\item applianceID: The ID of the appliance to fetch the summary for.
 
-\item hubID: The ID of the hub which the fuse is reporting from.
+\item hubID: The ID of the hub which the appliance is reporting from.
 
 \end{itemize}
 \underline{Expected Response:}\\[5pt]
 \forceindent Status Code: \textbf{200} \\
 \begin{minted}[frame=single,framesep=3mm,linenos=true,xleftmargin=21pt,tabsize=4]{js}
-{success: "Fuse summary retrieved",summary:{SUMMARY OBJECT}}
+{success: "appliance summary retrieved",summary:{SUMMARY OBJECT}}
 \end{minted}
 \underline{Error Response:}\\[5pt]
 \forceindent Status Code: \textbf{404} \\
 \begin{minted}[frame=single,framesep=3mm,linenos=true,xleftmargin=21pt,tabsize=4]{js}
-{error: "Fuse not found"}
+{error: "appliance not found"}
 \end{minted}
 
 \paragraph{Energy API's}
@@ -1703,14 +1873,22 @@ This API is called by the hub.\\
 \clearpage
 
 \section{Testing and Evaluation}
-\subsection{Fuse}
+In this section, testing of each part of the final platform will be described. The results from each test will be analysed and evaluated.
+\subsection{Appliance Sensor}
 \subsubsection{Test Outline}
-Important tests were carried out on the fuse to determine the maximum aud rates rates that could be achieved through the identified hardware, as well as considering how the length of transmission cable (Earth line) would affect error rate, and reception by the Hub.\\
+Important tests were carried out on the Appliance Sensor to determine the maximum Baud rates rates that could be achieved through the identified hardware, as well as considering how the length of transmission cable (Earth line) would affect error rate and reception by the Hub.\\
 A number of different assembly files were created to test different baud rates (changing clock speed if required). The assembly files generated packets at a fixed timing to reliably determine reception on the Hub-side. The selected baud rates were: 9600, 19200 and 57600.\\
 To test the reliability of transmissions over varying lengths of cable, different lengths were created and used in the experiment, these lengths being: 0m, 1m, 5m, 10m, 15m, 19m, 100m. Combining these different lengths generated lengths other than those specified. The final selected cable lengths were: 0m, 1m, 5m, 10m, 20m, 30m, 50m, 100m, 150m.\\
-The test devised combined baud rates the baud rates with the selected cable length. For each cable length, 1000 packets were sent at a rate of 100 packets per second.\\
+The test devised combined baud rates with the selected cable lengths. For each cable length, 1000 packets were sent at a rate of 100 packets per second.\\
 On the Hub, a testing script was created based on the final version of the software implementation. This script provided enhanced logging which allowed the generation of various data sets in CSV format.\\
-Google Sheets was used to process the data into summaries which were used to generate the following chart.
+Google Sheets was used to process the data into summaries which were used to generate the following charts.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=6cm]{/tests/joined-cable}
+\caption{The test rig for evaluating the capabilities of the Appliance Sensor (5m).}
+\label{fig:joined-cable}
+\end{figure}
 \subsubsection{Results}
 In the coming graphs, the following terminology is used:
 \begin{itemize}
@@ -1726,14 +1904,14 @@ In the coming graphs, the following terminology is used:
     title=Percentage of packets that were discarded\, corrected or uncorrectable for varying lengths\\of mains cable at 9600 baud for 1000 packets.,
     ybar=3pt,
     ymin=0,
-    ymax=100,
+    ymax=0.9,
     width=\columnwidth,
     %cycle list name=bar cycle list,
     enlarge x limits=0.25,
     legend style={at={(0.5,-0.15)},
       anchor=north,legend columns=-1},
     symbolic x coords={Discarded Packets,Corrected Packets,Uncorrectable Packets},
-    ylabel={Percentage of Packets},
+    ylabel={Packet Loss Probability (\%)},
     xticklabel style={align=center},
 	xtick=data,
     nodes near coords,
@@ -1779,7 +1957,7 @@ In the coming graphs, the following terminology is used:
 \legend{0m,1m,5m,10m,20m,30m,50m,100m,150m}
 \end{axis}
 \end{tikzpicture}
-\caption{The results from the tests.}
+\caption{The results from the testing of the Appliance Sensor.}
 \label{fig:pktlossmains}
 \end{figure}
 Figure~\ref{fig:pktlossmains} shows the average number of discarded packets, the average number of corrected packets and the average number of uncorrectable packets.\\
@@ -1793,33 +1971,48 @@ The reason for this was due to the OpAmp which has a slew rate of 0.5 volts per 
 \end{figure}
 
 \subsubsection{Conclusions}
-There is only one conclusion that can be drawn from the evaluation of the Fuse: The baud rate is low, and the selected OpAmp means that a faster baud rate cannot be used.\\
+There is only one conclusion that can be drawn from the evaluation of the Appliance Sensor: The baud rate is low, and the selected OpAmp means that a faster baud rate cannot be used.\\
 A different OpAmp with a lower slew rate could be used to improve the data rate in future so to ensure that the hub can correctly receive packets.
 
-
+\clearpage
 \subsection{Hub}
 \subsubsection{Test Outline}
 The next test to be performed concerned only the hub. This test was designed to assess the overall effectiveness of error detection and correction Hub-side.\\
-The testing apparatus consisted of two Raspberry Pi's. One Pi would act as the fuse, and send a stream of packets to the Hub.\\ 
-A whole new program was devised that generated packets, recorded each packet and it's type, and the time it was sent from the 'Fuse' Pi.\\
-The packets sent from the 'Fuse' Pi consisted of some percentage of each type of packet: a correct packet, a correctable packet, an uncorrectable packet and a packet with an incorrect checksum. These packets were randomly ordered and streamed to the Pi.\\
-The script used for testing the Fuse was used again to record the received packets, and each type the received packet had for the Hub.\\
-The two data sets generated from the Hub and the 'Fuse' Pi could then be correlated and cross examined to produce statistics about the capture rate and the different detection rates of each type of packet.\\
+The testing apparatus consisted of two Raspberry Pi's. One Pi would act as the Appliance Sensor, and send a stream of packets to the Hub.\\ 
+A whole new program was devised that generated packets, recorded each packet and it's type, and the time it was sent from the 'Appliance Sensor' Pi.\\
+The packets sent from the 'Appliance Sensor' Pi consisted of some percentage of each type of packet: a correct packet, a correctable packet, an uncorrectable packet and a packet with an incorrect checksum. These packets were randomly ordered and streamed to the Pi.\\
+The script used for testing the Appliance Sensor was used again to record the received packets, and each type the received packet had for the Hub.\\
+The two data sets generated from the Hub and the 'Appliance Sensor' Pi could then be correlated and cross examined to produce statistics about the capture rate and the different detection rates of each type of packet.\\
 Google Sheets was once again used to collate and analyse the data into a short summary that could be used to generate graphs.\\
 Both programs logged the data in CSV format making it extremely easy to transform into a spreadsheet.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=12cm]{/tests/pi-spammer}
+\caption{The test rig for detecting the error correction and detection rates for the Hub.}
+\label{fig:pi-spammer}
+\end{figure}
+
+
 \subsubsection{Results}
 Each graph shows the results generated from the test outlined in the previous section.\\
 Each series label represents the number of each type of packet used in that test, it is formatted as follows:\\[5pt]
 \textit{Correct packets / Incorrect packets / Uncorrectable packets / Incorrect checksum packets}\\[5pt]
 For each graph the following terminology is used:
 \begin{itemize}
+\item Capture Rate - This term is used to identify the percentage of packets that were captured out of the specified total.
+\item Correct Packet - An correct packet means that no corrections were made to the packet during the Decoding stage.
+\item Incorrect Packet - An incorrect packet means that a 1 bit error was identified and corrected by the Hub.
+\item Uncorrectable Packet - An uncorrectable packet is a packet that contained 2 or more bit errors, couldn't be corrected, and was subsequently discarded.
+\item Checksum Incorrect Packet - This term describes a packet where the checksum is incorrect and had to be discarded.
 
 \end{itemize}
-\item 
-\end{itemize}m
+
+
+
 \begin{figure}[H]
 \centering
-\resizebox {!} {10cm} {
+\resizebox {!} {\columnwidth} {
 \begin{tikzpicture}
 \begin{axis}[
     title=Error detection \& correction rates for the hub in \% for 100 packets,
@@ -1863,7 +2056,7 @@ For each graph the following terminology is used:
 
 \begin{figure}[H]
 \centering
-\resizebox {!} {10cm} {
+\resizebox {!} {\columnwidth} {
 \begin{tikzpicture}
 \begin{axis}[
     title=Error detection \& correction rates for the hub in \% for 500 packets,
@@ -1908,7 +2101,7 @@ For each graph the following terminology is used:
 
 \begin{figure}[H]
 \centering
-\resizebox {!} {10cm} {
+\resizebox {!} {\columnwidth} {
 \begin{tikzpicture}
 \begin{axis}[
     title=Error detection \& correction rates for the hub in \% for 1000 packets,
@@ -1950,16 +2143,17 @@ For each graph the following terminology is used:
 }
 \end{figure}
 The graphs show that the overall error correction \& error detection rates for the hub are almost perfect.\\
-In a few of the tests packets were discarded by the Hub. When a packet is discarded on the hub, there is a cool off period before resuming listening for the beginning of the next packet to the value of 1.5 milliseconds. Therefore, if one packet is lost, at the rate the 'Fuse' Pi was transmitting, 2 packets would be lost which is why there is a mismatch between the number of sent packets and received packets. 
+In a few of the tests packets were discarded by the Hub. When a packet is discarded on the hub, there is a cool off period before resuming listening for the beginning of the next packet to the value of 1.5 milliseconds. Therefore, if one packet is lost, at the rate the 'Appliance Sensor' Pi was transmitting, 2 packets would be lost which is why there is a mismatch between the number of sent packets and received packets. 
 
 \subsubsection{Conclusions}
-Overall, the evaluation of the error correction and detection capabilities of the Hub has proved to be very successful. The Hub appears to be pretty impervious to errors, and it detected the 100\% of each type of packet that it received.\\
-Once point to note however for possibly future improvement, is the cool off period between discarding a packet and resuming the next packet. Some fine tuning on this aspect could improve the capture rate of the hub.
+Overall, the evaluation of the error correction and detection capabilities of the Hub has proved to be very successful. The Hub appears to be pretty impervious to errors, and it detected 100\% of each type of packet that it received, if the packet made it through the capture process.\\
+Once point to note however for possible future improvement, is the cool off period between discarding a packet and resuming the next packet. Some fine tuning on this aspect could improve the capture rate of the hub.
 
+\clearpage
 \subsection{App}
 \subsubsection{Test Cases}
 
-The following tables are the test cases of the application for the project. Each test has a purpose, a distinct number of steps and a clear result.
+The following tables are the test cases of the application for the project. Each test has a purpose, a distinct number of steps and a clear result.\\[5pt]
 
 %% REGISTER %%
 
@@ -2004,73 +2198,73 @@ The following tables are the test cases of the application for the project. Each
 \hline
 \end{tabularx}\\[5pt]
 
-%% FUSE DETAILS %%
+%% Appliance Sensor DETAILS %%
 
 \begin{tabularx}{\columnwidth}{| p{\dimexpr 0.2\columnwidth-2\tabcolsep} | p{ \dimexpr 0.1\columnwidth-2\tabcolsep} | p{\dimexpr 0.35\columnwidth-2\tabcolsep} | p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}
 
 
 \hline
-\textbf{Case:} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textbf{Updating Fuse Details Functionality}} \\
+\textbf{Case:} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textbf{Updating An Appliance Details Functionality}} \\
 
 \hline
-\textbf{Purpose} & \multicolumn{3}{p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{To determine whether a user can edit a fuse, and update the details stored on the server.} \\
+\textbf{Purpose} & \multicolumn{3}{p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{To determine whether a user can edit an appliance, and update the details stored on the server.} \\
 
 \hline
 \multirow{3}{*}{\textbf{Criteria}} &
 \multicolumn{2}{p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}{\textbf{Test Step}} & \multicolumn{1}{p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}{\textbf{Expected Results}}\\\cline{2-4}
     & No. & Description & Description\\\cline{2-4}
-    & 1    & The user taps on the desired fuses' edit button, amends the fuses' details as required and taps the Update button. & The updated fuse details are sent to the server, and synced back with the client, the modal then closes closes.\\
+    & 1    & The user taps on the desired appliances' edit button, amends the appliances' details as required and taps the Update button. & The updated appliance details are sent to the server, and synced back with the client, the modal then closes closes.\\
 \hline
 
-\textbf{Actual \newline Result} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textcolor{OliveGreen}{\textbf{SUCCESS}} -  The user was able to adjust the Fuse details, and those changes were synced with the server.}\\
+\textbf{Actual \newline Result} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textcolor{OliveGreen}{\textbf{SUCCESS}} -  The user was able to adjust the appliance details, and those changes were synced with the server.}\\
 \hline
 \end{tabularx}\\[5pt]
 
-%% FUSE IMAGE UPLOAD %%
+%% appliance IMAGE UPLOAD %%
 
 \begin{tabularx}{\columnwidth}{| p{\dimexpr 0.2\columnwidth-2\tabcolsep} | p{ \dimexpr 0.1\columnwidth-2\tabcolsep} | p{\dimexpr 0.35\columnwidth-2\tabcolsep} | p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}
 
 
 \hline
-\textbf{Case:} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textbf{Fuse Image Upload Functionality}} \\
+\textbf{Case:} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textbf{Appliance Image Upload Functionality}} \\
 
 \hline
-\textbf{Purpose} & \multicolumn{3}{p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{To determine whether an existing user can update a fuse with a new profile picture.} \\
+\textbf{Purpose} & \multicolumn{3}{p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{To determine whether an existing user can update an appliance with a new profile picture.} \\
 
 \hline
 \multirow{3}{*}{\textbf{Criteria}} &
 \multicolumn{2}{p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}{\textbf{Test Step}} & \multicolumn{1}{p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}{\textbf{Expected Results}}\\\cline{2-4}
     & No. & Description & Description\\\cline{2-4}
-    & 1    & The user taps on the desired fuses edit button, taps the 'Upload new photo' button, takes a picture and hits ok.  & The new image is then uploaded to the server, and is synced with the client.\\
+    & 1    & The user taps on the desired appliances edit button, taps the 'Upload new photo' button, takes a picture and hits ok.  & The new image is then uploaded to the server, and is synced with the client.\\
 \hline
 
 \textbf{Actual \newline Result} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textcolor{red}{\textbf{FAIL}} -  Using a large phone (iPhone 6+) to take the photo caused the application to crash. \newline This was tested again on the iPhone 5, and it uploaded without a hitch.}\\
 \hline
 \end{tabularx}\\[5pt]
 
-%% FUSE DELETE %%
+%% appliance DELETE %%
 
 \begin{tabularx}{\columnwidth}{| p{\dimexpr 0.2\columnwidth-2\tabcolsep} | p{ \dimexpr 0.1\columnwidth-2\tabcolsep} | p{\dimexpr 0.35\columnwidth-2\tabcolsep} | p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}
 
 
 \hline
-\textbf{Case:} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textbf{Delete a Fuse Functionality}} \\
+\textbf{Case:} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textbf{Delete an appliance Functionality}} \\
 
 \hline
-\textbf{Purpose} & \multicolumn{3}{p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{To determine whether an existing user can remove a fuse from their accout.} \\
+\textbf{Purpose} & \multicolumn{3}{p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{To determine whether an existing user can remove an appliance from their accout.} \\
 
 \hline
 \multirow{3}{*}{\textbf{Criteria}} &
 \multicolumn{2}{p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}{\textbf{Test Step}} & \multicolumn{1}{p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}{\textbf{Expected Results}}\\\cline{2-4}
     & No. & Description & Description\\\cline{2-4}
-    & 1    & The user swipes left on the fuse they would like to delete and taps the delete button.  & The fuse is removed from the list of fuses and isn't shown again until the fuse next reports..\\
+    & 1    & The user swipes left on the appliance they would like to delete and taps the delete button.  & The appliance is removed from the list of appliances and isn't shown again until the appliance sensor next reports.\\
 \hline
 
-\textbf{Actual \newline Result} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textcolor{OliveGreen}{\textbf{SUCCESS}} - The fuse was removed from the account, and then at the next time the fuse reported data, the fuse was added back to the list.}\\
+\textbf{Actual \newline Result} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textcolor{OliveGreen}{\textbf{SUCCESS}} - The appliance was removed from the account, and then at the next time the appliance sensor reported data, the appliance was added back to the list.}\\
 \hline
 \end{tabularx}\\[5pt]
 
-%% FUSE LIVE DATA %%
+%% appliance LIVE DATA %%
 
 \begin{tabularx}{\columnwidth}{| p{\dimexpr 0.2\columnwidth-2\tabcolsep} | p{ \dimexpr 0.1\columnwidth-2\tabcolsep} | p{\dimexpr 0.35\columnwidth-2\tabcolsep} | p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}
 
@@ -2079,16 +2273,16 @@ The following tables are the test cases of the application for the project. Each
 \textbf{Case:} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textbf{Live Data Functionality}} \\
 
 \hline
-\textbf{Purpose} & \multicolumn{3}{p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{To determine if a user can view live data reported by a fuse} \\
+\textbf{Purpose} & \multicolumn{3}{p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{To determine if a user can view live data reported by an Appliance Sensor} \\
 
 \hline
 \multirow{3}{*}{\textbf{Criteria}} &
 \multicolumn{2}{p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}{\textbf{Test Step}} & \multicolumn{1}{p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}{\textbf{Expected Results}}\\\cline{2-4}
     & No. & Description & Description\\\cline{2-4}
-    & 1    & The user taps on a fuse and is presented with the live view. & The user is able to see live data being reported by the fuse.\\
+    & 1    & The user taps on an appliance and is presented with the live view. & The user is able to see live data being reported by the appliance sensor.\\
 \hline
 
-\textbf{Actual \newline Result} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textcolor{OliveGreen}{\textbf{SUCCESS}} -  The user could see live data being reported by the Fuse}\\
+\textbf{Actual \newline Result} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textcolor{OliveGreen}{\textbf{SUCCESS}} -  The user could see live data being reported by the appliance sensor}\\
 \hline
 \end{tabularx}\\[5pt]
 
@@ -2107,10 +2301,10 @@ The following tables are the test cases of the application for the project. Each
 \multirow{3}{*}{\textbf{Criteria}} &
 \multicolumn{2}{p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}{\textbf{Test Step}} & \multicolumn{1}{p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}{\textbf{Expected Results}}\\\cline{2-4}
     & No. & Description & Description\\\cline{2-4}
-    & 1    & The user taps the plus button and types in the Hub ID. & The user is successfully able to link their hub and see data being reported by the fuses connected to that hub.\\
+    & 1    & The user taps the plus button and types in the Hub ID. & The user is successfully able to link their hub and see data being reported by the appliance sensors connected to that hub.\\
 \hline
 
-\textbf{Actual \newline Result} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textcolor{OliveGreen}{\textbf{SUCCESS}} -  After the user entered the new hub ID and linked it with their account, the fuses screen was updted, and allowed the viewing of the additional hub.}\\
+\textbf{Actual \newline Result} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textcolor{OliveGreen}{\textbf{SUCCESS}} -  After the user entered the new hub ID and linked it with their account, the appliances screen was updated, and allowed the viewing of the additional hub.}\\
 \hline
 \end{tabularx}\\[5pt]
 
@@ -2129,10 +2323,10 @@ The following tables are the test cases of the application for the project. Each
 \multirow{3}{*}{\textbf{Criteria}} &
 \multicolumn{2}{p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}{\textbf{Test Step}} & \multicolumn{1}{p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}{\textbf{Expected Results}}\\\cline{2-4}
     & No. & Description & Description\\\cline{2-4}
-    & 1    & The user swipes left on the desired hub, and taps the delete button & The hub should is unlinked with the user account.\\
+    & 1    & The user swipes left on the desired hub, and taps the delete button & The hub is unlinked from the user account.\\
 \hline
 
-\textbf{Actual \newline Result} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textcolor{OliveGreen}{\textbf{SUCCESS}} -  After the user tapped the delete button, the hub was then unlinked from the user account, and no fuses were displayed.}\\
+\textbf{Actual \newline Result} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textcolor{OliveGreen}{\textbf{SUCCESS}} -  After the user tapped the delete button, the hub was then unlinked from the user account, and no appliances were displayed.}\\
 \hline
 \end{tabularx}\\[5pt]
 
@@ -2217,7 +2411,7 @@ The following tables are the test cases of the application for the project. Each
 \multirow{3}{*}{\textbf{Criteria}} &
 \multicolumn{2}{p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}{\textbf{Test Step}} & \multicolumn{1}{p{\dimexpr 0.35\columnwidth-2\tabcolsep} |}{\textbf{Expected Results}}\\\cline{2-4}
     & No. & Description & Description\\\cline{2-4}
-    & 1    & The user taps on profile item, changes some information, and taps the update button. & The Users' profile information should be synced with the server, and then updated on the client..\\
+    & 1    & The user taps on profile item, changes some information, and taps the update button. & The Users' profile information should be synced with the server, and then updated on the client.\\
 \hline
 
 \textbf{Actual \newline Result} & \multicolumn{3}{ p{\dimexpr 0.8\columnwidth-2\tabcolsep} |}{\textcolor{OliveGreen}{\textbf{SUCCESS}} -  After the user tapped update, the user details were synced with the server and updated client side.}\\
@@ -2246,18 +2440,17 @@ The results obtained from the usability study, would help narrow the scope of fu
 \subsubsection{Conclusions}
 The majority of test cases resulted in successes, the one exception being a fault with the PhoneGap Cordova Camera plugin, when testing Image upload. The iPhone 6+ is a relatively new device, with a high number of pixels per inch, meaning that the image produced is too big for the Camera plugin to handle, causing it to crash.\\
 A possible fix for this is to reduce the resolution of the image, or decrease the image size specifically for the iPhone 6+.\\
-The proposed Usability Study would provide a number of insights into the project, that could help direct the future work for this project.
+Conducting the proposed Usability Study would provide a number of insights into the project, that could help direct the future work for this project.
 
-
+\clearpage
 \subsection{Server}
-
 \subsubsection{Test Outline}
-To test the Server, a test was devised to perform various stress tests and see how the server reacts under various loads.\\
+A test was devised to perform various stress tests and see how the server reacts under various loads.\\
 The server specification is as follows: a 2.3Ghz CPU and 4 gigabytes of RAM.\\
 The stress tests were conducted using a piece of software called JMeter~\cite{jmeter}. This piece of software runs locally on a personal machine, and imitates a user specified number of clients. JMeter can generate a number of statistics and graphs, the main statistic this test was interested in was Concurrent Users Vs. Response Time.\\
 To test the server, a single URL was called 100 times by X number of concurrent users, with a ramp up period of 10 seconds.\\
 The maximum number of users that JMeter can support is 2200, therefore there were three test steps: 100, 1000 and 2000.\\
-The selected URL was the Login url (\url{scc-devine.lancs.ac.uk:8000/api/user}) which returns quite a large JSON object (316 bytes), which has to be retrieved from the database. The tests used valid credentials which meant that the server had to fetch the data every request.
+The selected URL was the Login url (\url{scc-devine.lancs.ac.uk:8000/api/user}) which returns quite a large JSON object (316 bytes), which has to be retrieved from the database. The tests used valid credentials which meant that the server had to fetch the data on every request.
 
 \subsubsection{Results}
 In the following graphs, Users are referred to as Threads, because in JMeter a thread acts as a user.
@@ -2294,8 +2487,45 @@ Spikes can be seen in both the CPU graph and the Memory usage graph, and they cl
 
 \subsubsection{Conclusions}
 It is clear from the stress tests that a single CPU server with a small amount of RAM is not up for the task of a hugely utilised system. However, the server-side software has been designed with this in mind, and is scalable across server clusters, allowing for a more robust, distributed system.
+\clearpage
 
-\section{Conclusions \& Future Work}
+\section{Conclusion \& Future Work}
+\subsection{Conclusion}
+At the beginning of the project, a number of requirements were specified:
+\begin{itemize}
+  \item \underline{Small} - The device needs to be small and unobtrusive and if possible, it should be hidden.
+  \item \underline{Minimalist}- The devices design should be simple and not overly complex.
+  \item \underline{Low power} - The device shouldn't consume a lot of energy, as that would defeat the aim of the device.
+  \item \underline{Low cost} - The device should be inexpensive, so that the technology is easily accessible to all.
+  \item \underline{Simple to install and use} - The device should work "out of the box" and require minimal setup and installation.
+  \item \underline{Accessible data}  - The data produced should be instantly accessible through either a web interface or smartphone app.
+  \item \underline{Real time} - The data produced and displayed should be real time and up to date.
+  \item \underline{Breaks down data per appliance} - The data produced should be tied to a particular appliance so that the user can visually identify each device.
+  \item \underline{Reliable} - The device should be reliable and require minimal maintenance.
+\end{itemize}
+Size was a requirement, and it specified that the final system must be small. Each Appliance Sensor is small in comparison to existing products, and components can be minified further to provide a more compact final solution. Similarly, with the Hub, the Raspberry Pi has a small form factor, and is very easy to hide. The additional hardware accompanying the Hub can also be minified and integrated into the Hub, reducing the form factor further.\\
+Minimalism was a key requirement, and the solution produced matches this requirement. The minimalist aspects in the Appliance Sensor, which has a very simple circuit: 1 PIC, 5 resistors and 2 LEDS.\\
+Low Power was also specified as a requirement. For an installation of 1 hub and 40 Appliance Sensors, the system will consume \SI{700}{\milli\ampere} for the hub, and 40 x \SI{8}{\micro\ampere}, giving a total of \SI{0.70032}{\ampere}, which works out at around \SI{3.5016}{\watt}.\\
+The total cost of a system consisting of 1 Hub and 40 Appliance Sensors is around \pounds98. The Raspberry Pi including required accessories and additional hardware prices up at around \pounds50 and the Appliance Sensor costs around \pounds1.20 each, which adds the additional \pounds48 for 40 sensors. In comparison to the existing products section, the price offered by this system is low cost for the accuracy received, adhering to the requirement.\\
+The installation process required to setup an Appliance Sensor and a Hub is not very simple and is quite laborious in it's current implementation. Some further research will be required in order to speed up the installation process.\\
+The data produced by the system is readily accessible, and the use of an application makes the data instantly available to users. The application is also cross platform making it accessible from a wide variety of devices. This further enforicing that the requirement of accessible data has been met.\\
+The application supports real time data that a User can view at their disposal, which adheres to the requirement of the system being real time.\\
+Each appliance is tied to it's own data set, and the use data ranges allows a User to navigate through the history of the desired appliance.\\
+As proven in the Evaluation section, the produced system is quite reliable. The Appliance Sensor has an extremely high range and has so far experienced no downtime, the error correction and detection capabilities of the Hub indicate that the system is impervious to errors. The server however needs to be scaled and distributed if the system were to go into production.\\
+The overall results obtained from this project, shows that a low cost, low infrastructure approach to household energy consumption monitoring that utilises the Earth line as a method of communication is viable.
+
+\subsection{Future Work}
+There are a few weak areas to the project that could be improved the first of which is the security of the platform.\\ 
+Although security was not specified as a requirement, it is an important consideration in any system. To implement security in the project, all requests to the server would use the Hyper-text Transfer Protocol Secure to remove the interception and readability of transmitted packets from the Hub and the Application. As well as this method of security, a module for Node called Passport.js~\cite{passportjs} would be used server side to implement OAuth authentication.\\
+Another security risk is the transmission of packets down the Earth line. If someone were to plug a similar listener into the Earthed line, information could be obtained about the energy consumption of different appliance, which could be deemed sensitive information by Users of the platform.\\
+For the application, the conduction of a User study and a Usability study would help direct improvements to the application, and analyse the overall usefulness of the application. As well as this, field checking could be added to the application to ensure that the User enters correct data each time they want to carry out an action. Additionally, the Axis labels for the graphs are non-existant in the application. This would affect user understanding of each graph, and would obviously need to be improved before the system was widely utilised. \\
+Further work could be placed into improving the graphing capabilities, so that users can obtain key information at a glance. Push notifications could also be used to inform users that the carbon levels are high, or that an appliance is using an unusually large amount of power.\\
+The Appliance Sensor could be improved by adding control features from the application, in other words bi-directional communication between the hub and an Appliance Sensor. This could enable the ability to turn appliances on and off remotely adding another capability to the system.\\
+Another feature that would improve the Appliance Sensor would be the addition of CDMA (Code Division Multiple Access) as outlined in the proposal. This would mean that collisions between packets would no longer be an issue, meaning that more samples could be transmitted more regularly.\\
+For the Hub, as mentioned in the evaluation section, the fine tuning of the cool down period would be beneficial and would improve the capture rate.\\
+As mentioned in the conclusion, the installation of a Hub and an Appliance Sensor is currently laborious. Further work will need to be performed in order to simplify this process and make installation simple.\\
+Evaluating the system on a live mains line would also be beneficial to see how the system reacts and handles the noise experienced on the Earth line.\\
+Pitching the system to Energy companies could also benefit the project massively. A system that allows comprehensive breakdowns of per appliance energy consumption is attractive to Energy companies who are actively looking to reduce the load on the grid. The platform could also provide insights into many different appliances and this information could be fed back to manufacturers as a prompt to start a conversation about increased energy conservation.\\
 
 \clearpage
 \bibliographystyle{plain}
