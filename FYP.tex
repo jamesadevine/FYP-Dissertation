@@ -18,7 +18,7 @@
 %  3)  latex apssamp.tex
 %  4)  latex apssamp.tex
 %
-\documentclass[draft,preprint,12pt,3p]{elsarticle}
+\documentclass[preprint,12pt,3p]{elsarticle}
 \renewcommand{\thesection}{\arabic{section}}
 \renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
 \renewcommand\thesubsubsection{\thesubsection.\arabic{subsubsection}}
@@ -34,7 +34,9 @@
 \usepackage{minted}
 \usepackage{titlesec}
 \usepackage{caption}
+\usepackage{pdfpages}
 \usepackage{subcaption}
+\usepackage[toc,page]{appendix}
 
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
@@ -197,13 +199,13 @@
 \address{\today}
 
 \begin{abstract}
-Energy monitoring has come to the fore in recent years due to rapid climate change and as a result energy companies began distributing free energy monitoring kits. Because of this, many homes have monitoring devices that provide an overall view of the energy consumption of a household, but do not have the ability to view energy consumption per device.\\ 
+Energy monitoring has come to the fore in recent years due to rapid climate change and as a result energy companies have begun distributing free home energy monitoring kits. Because of this, many homes have monitoring devices that provide an overall view of the energy consumption of a household, but do not have the ability to view energy consumption per device.\\ 
 This project investigates a solution to the problem of per appliance energy monitoring using a low infrastructure, low cost approach, utilising the Earthed infrastructure of a building as a means of communication.\\
 An application allows Users to interface with the data obtained by the system, as well as external price, energy and carbon information, with the hope of allowing Users to make informed decisions on the usage of their appliances.\\
 The results of this project show that the Earthed internals of a buildings can indeed be utilised as means of communication, and that the reliability and dependability of such a system are high.
 \begin{description}
 \item[Working Documents]
-\url{http://scc-intranet.lancs.ac.uk/Projects/2014/SmartFuse}
+\url{http://scc-intranet.lancs.ac.uk/Projects/2014/SmartMonitoring}
 
 \center{\tiny \textbf{Must login with valid Lancaster University Credentials.}}
 \end{description}
@@ -211,6 +213,14 @@ The results of this project show that the Earthed internals of a buildings can i
 
 \pprintMaketitle
 %DECLARATION
+\clearpage
+\begin{center}
+    {\Large Declaration}\\[80pt]
+    I certify that the material contained in this dissertation is my own work and does not contain unreferenced or unacknowledged material. I also warrant that the above statement applies to the implementation of the project and all associated documentation. Regarding the electronically submitted version of this submitted work, I consent to this being stored electronically and copied for assessment purposes, including the Department’s use of plagiarism detection systems in order to check the integrity of assessed work.
+I agree to my dissertation being placed in the public domain, with my name explicitly included as the author of the work.\\[80pt]
+Date: \today\\[20pt]
+Signed: James Devine
+\end{center}
 
 \clearpage
 \tableofcontents
@@ -850,6 +860,20 @@ Figure~\ref{fig:hubclassdiagram} shows the final class diagram for the hub softw
 Each class is instantiated using the \underline{smart\_monitoring\_start.py} file. When this file is executed, the \underline{smart\_monitoring\_networker} class is instantiated, and getOwner is called. This prompts the hub to talk to the server and obtain its credentials and also the user account it's linked to. If no user account is linked, the hub will check at regular 30 second intervals until a user account has been found.\\
 Once the hub has obtained all of the required details, the \underline{serial\_listener} class is instantiated with the instance of networker previously instantiated. The listen function is called on the serial listener, which will listen forever. This is the main loop for the program.\\
 When the \underline{serial\_listener} class successfully receives a full packet, it passes the packet and an instance of networker to the \underline{serial\_decoder} and begins execution in a separate thread. If the serial\_decoder successfully decodes the packet, it is transmitted to the server using the sendApplianceData function of the networker class passed in by the \underline{serial\_listener}.
+
+\paragraph{Obtaining Credentials}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\columnwidth]{/diagrams/hub-lifecycle}
+    \caption{How the Hub obtains Credentials}
+    \label{fig:hublifecycle}
+\end{figure}
+
+Figure~\ref{fig:hublifecycle} shows a sequence diagram of how a Hub obtains credentials.\\
+The Hub will continuously try and obtain API credentials until it receives an acknowledgement that the Hub is linked to a User account. A Hub is considered linked when the user adds a new hub to their account.\\
+The Hub will not receive any packets for the duration that it is not linked, as there is a requirement imposed by the API, that each request must be associated with a user account.
+
 \paragraph{Event Driven Architecture}
 
 \begin{figure}[H]
@@ -2531,6 +2555,50 @@ Pitching the system to Energy companies could also benefit the project massively
 \bibliographystyle{plain}
 \bibliography{master}{}
 
+\clearpage
+\begin{appendices}
+\subsection{Proposal}
+\includepdf[pages={-}]{appendices/proposal.pdf}
+\subsection{Original Gantt Chart}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\columnwidth]{/appendices/summer}
+    \caption{The Gantt Chart for the Summer break}
+    \label{fig:summergantt}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\columnwidth]{/appendices/term}
+    \caption{The Gantt Chart for Term Time}
+    \label{fig:termgantt}
+\end{figure}
+\clearpage
+\subsection{Deviations from the Proposal}
+There were a number of deviations from the original proposal:
+\begin{itemize}
+\item Operation as a Fuse - The proposal indicated that the Project would act as a replacement for the traditional fuse. Growing requirements and hardware restrictions meant that the project shifted away from this idea.
+\item CDMA - Code Division Multiple Access was suggested as a means for communication and collision detection and resolution. The scope for this idea was shifted due to time constraints of the project and was replaced by Extended Hamming Code as a means for collision detection and resolution.
+\item Earth Line as opposed to power line - The original proposal indicated that the Power line would be used. When conducting research, the realisation was made that existing solutions had heavily investigated the use of the Power line. Instead, the Earth line was proposed as the communication medium.
+\item Application as well as Web Interface - The proposal indicated that purely a web interface would be used to display the data. Instead this shifted over the course of the project, and an application was created in conjunction with a small Web Interface, which can be seen as an addition.
+\item Intercommunication of hubs - The proposal suggested that the intercommunication of hubs may be required. The current implementation means that only one Hub would be required per installation, and so the intercommunication of hubs was no longer a requirement.
+\item Ease of installation - The project set a requirement that the system should be easy to install. Currently the system is quite difficult to install due to it being an initial prototype.
+\end{itemize}
+
+The above amendments were approved by Joe Finney, supervisor for this project.
+
+\clearpage
+\subsubsection{Ammended Gantt Chart}
+Submitted alongside the Proposal was the original Gantt chart which can be seen in Figures~\ref{fig:summergantt} \&~\ref{fig:termgantt}.\\
+Over the course of the project, the original Gantt Chart changed dramatically, the actual Gantt charts can be seen in the following two figures:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\columnwidth]{/appendices/summer-actual}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\columnwidth]{/appendices/term-actual}
+\end{figure}
+\end{appendices}
 \end{document}
 %
 % ****** End of file apssamp.tex ******
